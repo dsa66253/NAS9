@@ -202,9 +202,10 @@ class TestController:
                 correct += (predict == labels).sum()
                 for t, p in zip(labels.view(-1), predict.view(-1)):
                     confusion_matrix_torch[t.long(), p.long()] += 1
-            acc = correct / total
+            acc = correct / total 
 
         net.train()
+
         return acc * 100
     def prepareData(self):
         PATH_test = testDataSetFolder
