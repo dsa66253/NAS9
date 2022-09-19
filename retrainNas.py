@@ -32,6 +32,7 @@ from  utility.DatasetReviewer import DatasetReviewer
 import json 
 from utility.HistDrawer import HistDrawer
 # from train_nas_5cell import prepareDataloader
+from models.initWeight import initialize_weights
 stdoutTofile = True
 accelerateButUndetermine = cfg_newnasmodel["cuddbenchMark"]
 recover = False
@@ -103,6 +104,7 @@ def prepareModel(kth):
     net = net.to(device)
     print("net.cellArch:", net.cellArch)
     print("net", net)
+    initialize_weights(net, seed_img)
     return net
 def prepareOpt(net):
     return optim.SGD(net.parameters(), lr=initial_lr, momentum=momentum,

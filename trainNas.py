@@ -33,6 +33,7 @@ from utility.DatasetReviewer import DatasetReviewer
 from utility.AccLossMonitor import AccLossMonitor
 import json
 from models.arch import simpleArch
+from models.initWeight import initialize_weights
 stdoutTofile = True
 accelerateButUndetermine = False
 recover = False
@@ -97,6 +98,7 @@ def prepareModel():
         #! move to cuda before assign net's parameters to optim, otherwise, net on cpu will slow down training speed
         net = net.to(device)
         net.train()
+    initialize_weights(net, seed_img)
     return net
 
 def prepareOpt(net):
@@ -113,7 +115,7 @@ def prepareOpt(net):
     
 def printNetWeight(net):
     for name, para in net.named_parameters():
-        print(name, para)
+        print(name, para.sum())
 
 
     
@@ -477,7 +479,6 @@ if __name__ == '__main__':
         trainDataLoader, valDataLoader = prepareDataLoader(trainData, valData)
         criterion = prepareLossFunction()
         net = prepareModel()
-
         model_optimizer, nas_optimizer = prepareOpt(net)
         last_epoch_val_ac, lossRecord, accRecord  = myTrain(k, trainData, trainDataLoader, valDataLoader, net, model_optimizer, nas_optimizer, criterion, writer)  # 進入model訓練
         #info record training processs
