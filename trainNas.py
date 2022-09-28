@@ -218,6 +218,7 @@ def myTrain(kth, trainData, train_loader, val_loader, net, model_optimizer, nas_
             accRecord = {"train": record_train_acc, "val": record_val_acc, "test": record_test_acc}
             lossRecord = {"train": record_train_loss, "val": record_val_loss}
             
+            net.getAlphasPara() #use to debug why alphas all are the same
             #info handle alpha operation 
             if epoch in epoch_to_drop:
                 # pass
