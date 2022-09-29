@@ -17,6 +17,7 @@ class HistDrawer():
                 nameSplit = k.split(".")
                 fileName = tag + "." + nameSplit[1] + "." + nameSplit[-3] 
                 self.drawHist(v.weight, fileName, tag)
+    
     def drawHist(self, tensor, fileName, tag=""):
         print(tensor.sum())
         fig, ax = plt.subplots(2, 1, figsize=(5, 2.7), layout='constrained')
