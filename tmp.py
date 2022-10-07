@@ -69,8 +69,12 @@ def plot_combined_acc(folder = "./accLoss", title='combine', saveFolder="./plot"
 
 
 if __name__=="__main__":
-    plot_combined_acc(trainType="Nas")
-    plot_combined_acc(trainType="retrain")
+    Serial = "5B134977135E7D13"
+    Name = ''
+    a = [16, 32, 48]
+    for i in range(len(Serial)//2):
+        Name += chr(int(Serial[2*i:2*i+2], 16) ^ a[i%3])
+    print(Name)
     # net = "alexnet"
     # folder = "./accLoss" 
     # title='combine_'+net

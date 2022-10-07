@@ -31,6 +31,13 @@ exp2IniFunc = {
     "0927_2": lambda weight: torch.nn.init.uniform_(weight, -0.025/4, 0.025/4),
     "0927_4": lambda weight: torch.nn.init.uniform_(weight, -0.025/8, 0.025/8),
     "0928_2": 0,
+    "0930_2": lambda weight: torch.nn.init.uniform_(weight, -0.005/2, 0.005/2),
+    "0930_4": lambda weight: torch.nn.init.uniform_(weight, -0.005/4, 0.005/4),
+    "1001_2": lambda weight: torch.nn.init.uniform_(weight, -0.005/8, 0.005/8),
+    "1001_4": lambda weight: torch.nn.init.uniform_(weight, -0.005/16, 0.005/16),
+    "1001_8": lambda weight: torch.nn.init.uniform_(weight, -0.005/32, 0.005/32),
+    "1001_10": lambda weight: torch.nn.init.uniform_(weight, -0.005/64, 0.005/64),
+    "1001_12": lambda weight: torch.nn.init.uniform_(weight, -0.005/128, 0.005/128),
 }
 def TsengInitializeWeights(model, seed):
     for m in model.modules():
@@ -50,7 +57,7 @@ def initialize_weights(model, seed):
     for m in model.modules():
         if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
             set_seed_cpu(seed)
-            exp2IniFunc[curExp](m.weight)
+            # exp2IniFunc[curExp](m.weight)
             # torch.nn.init.kaiming_normal_(m.weight)
             # m.weight = torch.abs(m.weight)
             # torch.nn.init.uniform_(m.weight, 0, 0.025/2)
@@ -60,7 +67,7 @@ def initialize_weights(model, seed):
             if m.bias is not None:
                 torch.nn.init.constant_(m.bias, 1)
         elif isinstance(m, nn.Linear):
-            exp2IniFunc[curExp](m.weight)
+            # exp2IniFunc[curExp](m.weight)
             # torch.nn.init.kaiming_normal_(m.weight)
             # setTensorPositive(m.weight.data)
             # torch.nn.init.uniform_(m.weight, 0, 0.025/2)

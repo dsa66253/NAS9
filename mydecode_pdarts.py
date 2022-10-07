@@ -7,6 +7,47 @@ from feature.make_dir import makeDir
 import sys
 from data.config import featureMap, PRIMITIVES, folder
 # this file just use to plot figure that shows alphas' variation during training
+manualAssign = {
+    "layer_0_1": [
+        0,
+        0,
+        0,
+        0,
+        1
+    ],
+    "layer_1_2": [
+        0,
+        1,
+        0,
+        0,
+        0
+    ],
+    "layer_2_3": [
+        1,
+        0,
+        0,
+        0,
+        0
+    ],
+    "layer_3_4": [
+        1,
+        0,
+        0,
+        0,
+        0
+    ],
+    "layer_4_5": [
+        1,
+        0,
+        0,
+        0,
+        0
+    ]
+}
+def makeAllDir():
+    for folderName in folder:
+        print("making folder ", folder[folderName])
+        makeDir(folder[folderName])
 def setStdoutToFile(filePath):
     print("std output to ", filePath)
     f = open(filePath, 'w')
@@ -69,15 +110,7 @@ def decodeAlphas(kth):
     # print("finish decode and save genotype:", maxAlphasIndex)
     return oneLargestIndex
     
-def manualAssign(kth):
 
-    makeDir("./weights_pdarts_nodrop/")
-    genotype_filename = os.path.join('./weights_pdarts_nodrop/',
-                    'genotype_' + str(kth))
-        
-    arch = np.reshape([4, 1, 0, 0, 0], (5, 1, 1))
-    np.save(genotype_filename, arch)
-    return arch
 def decodeInnerCell(allAlphas):
     takeNumOfOp = 1
     finalAlpha = allAlphas[-1] #* take the last epoch
@@ -104,7 +137,8 @@ def decodeAllInnerCell(kth):
         key = key.split("th_")[1]
         decodeDict[key] = decodeInnerCell(allAlphas)
         
-    print(json.dumps(decodeDict, indent=4)) #* make ndarray to list
+    print(json.dumps(manualAssign, indent=4)) #* make ndarray to list
+
     return decodeDict
 
 if __name__ == '__main__': 
@@ -119,6 +153,7 @@ if __name__ == '__main__':
     # for key in data:
     #     print(key, data[key])
     # exit()
+    makeAllDir()
     for kth in range(3):
         filePath = "./decode/{}th_decode.json".format(kth)
         f = setStdoutToFile(filePath)
