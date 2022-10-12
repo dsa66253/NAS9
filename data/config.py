@@ -36,6 +36,10 @@ featureMap = {
     "f5":{
         "channel":256,
         "featureMapDim":4
+    },
+    "f6":{
+        "channel":256,
+        "featureMapDim":4
     }
 }
 trainMatrix = [
@@ -51,6 +55,7 @@ featureMapDim = [
     256,
     384,
     384,
+    256,
     256,
 ]
 cfg_alexnet = {
