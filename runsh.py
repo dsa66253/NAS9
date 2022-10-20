@@ -67,14 +67,14 @@ def brutNas():
             0
         ],
         "layer_4_5": [
-            1,
+            0,
             0,
             0,
             0,
             0
         ],
         "layer_5_6": [
-            1,
+            0,
             0,
             0,
             0,
@@ -87,8 +87,6 @@ def brutNas():
         # for fisrt layer
         for j in range(5):
             # for second layer
-            if j==0 and i==0:
-                break # this experiement has been done
             manualAssign = copy.deepcopy(initiManualAssign)
             manualAssign["layer_4_5"][i] = 1
             manualAssign["layer_5_6"][j] = 1
@@ -108,6 +106,7 @@ def brutNas():
                 setStdoutToDefault(f)   
             
             subprocess.call('./train.sh')
+            # exit()
             
 
 if __name__=="__main__":
