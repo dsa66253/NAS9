@@ -72,7 +72,7 @@ def saveAccLoss(kth, lossRecord, accRecord):
 def prepareDataSet():
     #info prepare dataset
     datasetHandler = DatasetHandler(trainDataSetFolder, cfg, seed_img)
-    datasetHandler.addAugmentDataset(transforms.RandomHorizontalFlip(p=1))
+    # datasetHandler.addAugmentDataset(transforms.RandomHorizontalFlip(p=1))
     # datasetHandler.addAugmentDataset(transforms.RandomRotation(degrees=10))
     print("training dataset set size:", len(datasetHandler.getTrainDataset()))
     print("val dataset set size:", len(datasetHandler.getValDataset()))
@@ -101,7 +101,8 @@ def prepareModel(kth):
     #info prepare model
     print("Preparing model...")
     net = NewNasModel(cellArch=archDict)
-    net.train()
+    # net.train()
+    net.eval()
     net = net.to(device)
     print("net.cellArch:", net.cellArch)
     print("net", net)
@@ -289,7 +290,7 @@ def myTrain(kth, trainData, trainDataLoader, valDataLoader, net, model_optimizer
             # writer.add_scalar('val_Acc/k='+str(kth), valAcc, epoch)
             last_epoch_val_acc = 100 * correct_images_val / total_images_val
         # exit()
-        # if iteration>=3:
+        # if iteration>=50:
         #     break
     lossRecord = {"train": record_train_loss, "val": record_val_loss}
     accRecord = {"train": record_train_acc, "val": record_val_acc, "test": record_test_acc}
@@ -361,10 +362,12 @@ if __name__ == '__main__':
         criterion = prepareLossFunction()
         net = prepareModel(k)
         histDrawer = HistDrawer(folder["pltSavedDir"])
-        histDrawer.drawNetConvWeight(net, tag="ori_{}".format(str(k)))
+        # histDrawer.drawNetConvWeight(net, tag="ori_{}".format(str(k)))
         model_optimizer = prepareOpt(net)
-        
+        testAcc = testC.test(net)
+        testC.printAllModule(net)
         last_epoch_val_ac, lossRecord, accRecord = myTrain(k, trainData, trainDataLoader, valDataLoader, net, model_optimizer, criterion, writer=None)  # 進入model訓練
+
         histDrawer.drawNetConvWeight(net, tag="trained_{}".format(str(k)))
         #info record training processs
         alMonitor = AccLossMonitor(k, folder["pltSavedDir"], folder["accLossDir"], trainType="retrain")

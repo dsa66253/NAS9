@@ -20,14 +20,14 @@ def normalize(seed, img_dim):
         #                                     ])
         train_transforms = transforms.Compose([transforms.Resize(img_dim),
                                             transforms.CenterCrop(img_dim),
-                                            transforms.RandomHorizontalFlip(p=0.5),  # 隨機要不要左右顛倒
+                                            # transforms.RandomHorizontalFlip(p=0.5),  # 隨機要不要左右顛倒
                                             transforms.ToTensor(),
                                             # normalize,
                                             ])
     else:
         train_transforms = transforms.Compose([transforms.Resize(img_dim),
                                             transforms.CenterCrop(img_dim),
-                                            transforms.RandomHorizontalFlip(p=0),  # 隨機要不要左右顛倒
+                                            # transforms.RandomHorizontalFlip(p=0),  # 隨機要不要左右顛倒
                                             transforms.ToTensor(),
                                             # normalize,
                                             ])
