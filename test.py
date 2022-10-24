@@ -185,6 +185,7 @@ class TestController:
     def __init__(self, cfg, device, seed=20, testDataSetFolder=testDataSetFolder):
         self.cfg = cfg
         self.testSet = self.prepareData(seed, testDataSetFolder)
+        print("tatal number of test images: ", len(self.testSet))
         self.testDataLoader = self.prepareDataLoader(self.testSet)
         self.num_classes = cfg["numOfClasses"]
         self.device = device
@@ -215,7 +216,7 @@ class TestController:
                     confusion_matrix_torch[t.long(), p.long()] += 1
                 print("outputs ", outputs)
                 # print("predict", predict)
-                print("labels", labels)
+                # print("labels", labels)
                 # print("total {}, correct {}".format(total, correct))
             acc = correct / total
 
@@ -269,8 +270,8 @@ if __name__ == '__main__':
         
         seed_cpu = 20
         set_seed_cpu(seed_cpu)
-        testSet = prepareData()
-        testDataLoader = prepareDataLoader(testSet)
+        # testSet = prepareData()
+        # testDataLoader = prepareDataLoader(testSet)
         
 
 
