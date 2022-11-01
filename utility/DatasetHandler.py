@@ -62,9 +62,9 @@ class DatasetHandler():
         # self.augmentDatasetList.append(newAugmentData)
         # print("self.trainDataset", type(self.trainDataset))
         # print("newAugmentTrainDataset", type(newAugmentTrainDataset))
-        print("before concate", len(self.originalTrainDataset))
+        # print("before concate", len(self.originalTrainDataset))
         self.originalTrainDataset = torch.utils.data.ConcatDataset([self.originalTrainDataset, newAugmentTrainDataset])
-        print("after concate", len(self.originalTrainDataset))
+        # print("after concate", len(self.originalTrainDataset))
         # exit()
     def getTrainDataset(self):
         if self.originalTrainDataset==None:

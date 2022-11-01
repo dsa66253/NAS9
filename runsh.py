@@ -1,7 +1,7 @@
 import subprocess
 import json, os, sys, copy
 from os.path import isfile, join
-from data.config import folder
+from data.config import folder, cfg_newnasmodel as cfg
 def makeAllDir():
     for folderName in folder:
         print("making folder ", folder[folderName])
@@ -38,28 +38,28 @@ def doExpBasedExperiments():
 def brutNas():
     # this funciion also handle decode job
     initiManualAssign = {
-        "layer_0_1": [
-            0,
-            0,
-            0,
-            0,
-            1
-        ],
-        "layer_1_2": [
-            0,
-            1,
-            0,
-            0,
-            0
-        ],
-        "layer_2_3": [
-            1,
-            0,
-            0,
-            0,
-            0
-        ],
-        "layer_3_4": [
+        # "layer_0_1": [
+        #     0,
+        #     0,
+        #     0,
+        #     0,
+        #     1
+        # ],
+        # "layer_1_2": [
+        #     0,
+        #     1,
+        #     0,
+        #     0,
+        #     0
+        # ],
+        # "layer_2_3": [
+        #     1,
+        #     0,
+        #     0,
+        #     0,
+        #     0
+        # ],
+        "layer_0_4": [
             0,
             0,
             0,
@@ -79,13 +79,15 @@ def brutNas():
     for i in range(5):
         # for fisrt layer
         for j in range(5):
+            if (i==0 and j==0) or (i==0 and j==1):
+                continue
             # for second layer
             manualAssign = copy.deepcopy(initiManualAssign)
             
-            manualAssign["layer_3_4"][i] = 1
+            manualAssign["layer_0_4"][i] = 1
             manualAssign["layer_4_5"][j] = 1
             f = setStdoutToFile("./curExperiment.json")
-            curExpName = "1024_brutL3L4.{}_{}".format(i, j)
+            curExpName = "1028_2brutL3L4.{}_{}".format(i, j)
             desDir = join("./log", curExpName)
             print(json.dumps({curExpName:1}, indent=4))
             setStdoutToDefault(f)
@@ -93,7 +95,7 @@ def brutNas():
             makeDir(desDir)
             makeAllDir()
             #info handle decode job
-            for kth in range(3):
+            for kth in range(cfg["numOfKth"]):
                 filePath = "./decode/{}th_decode.json".format(kth)
                 f = setStdoutToFile(filePath)
                 print(json.dumps(manualAssign, indent=4)) #* make ndarray to list
