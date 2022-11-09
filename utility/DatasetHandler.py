@@ -62,9 +62,9 @@ class DatasetHandler():
         # self.augmentDatasetList.append(newAugmentData)
         # print("self.trainDataset", type(self.trainDataset))
         # print("newAugmentTrainDataset", type(newAugmentTrainDataset))
-        print("before concate", len(self.originalTrainDataset))
+        # print("before concate", len(self.originalTrainDataset))
         self.originalTrainDataset = torch.utils.data.ConcatDataset([self.originalTrainDataset, newAugmentTrainDataset])
-        print("after concate", len(self.originalTrainDataset))
+        # print("after concate", len(self.originalTrainDataset))
         # exit()
     def getTrainDataset(self):
         if self.originalTrainDataset==None:
@@ -75,6 +75,7 @@ class DatasetHandler():
             self.originalTrainDataset, self.originalValDataset = self.__split_data(self.originalData, 0.2)
             self.augmentDatasetList.append(self.originalTrainDataset)
         print("trainDataSetFolder", self.trainDataSetFolder)
+        # print("tatal number of train images: ", len(self.augmentDatasetList))
         return self.originalTrainDataset
     
     def getValDataset(self):
@@ -86,12 +87,14 @@ class DatasetHandler():
             self.originalTrainDataset, self.originalValDataset = self.__split_data(self.originalData, 0.2)
             self.augmentDatasetList.append(self.originalTrainDataset)
         print("trainDataSetFolder", self.trainDataSetFolder)
+        # print("tatal number of val images: ", len(self.originalValDataset))
         return self.originalValDataset
     def getTestDataset(self):
         self.testDataset = datasets.ImageFolder(self.trainDataSetFolder, transform=transforms.Compose([
                     self.normalize,
                     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
                 ]))
+        # print("tatal number of test images: ", len(self.testDataset))
         return self.testDataset
     @staticmethod
     def getOriginalDataset(trainDataSetFolder, cfg, seed=10):

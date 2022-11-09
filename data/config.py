@@ -58,6 +58,19 @@ featureMapDim = [
     256,
     256,
 ]
+seed = {
+    "0": 10,
+    "1": 255,
+    "2": 830,
+    "3": 1830,
+    "4": 2830,
+    "5": 3830,
+    "6": 4830,
+    "7": 5830,
+    "8": 6830,
+    "9": 7830
+        
+}
 cfg_alexnet = {
     'name': 'alexnet',
     'clip': False,
@@ -84,7 +97,7 @@ cfg_nasmodel = {
     'batch_size': 128,
     'start_train_nas_epoch': 4,
     'ngpu': 1,
-    'epoch': 50,
+    'epoch': 45,
     'decay1': 70,
     'decay2': 90,
     'image_size': 128,
@@ -96,6 +109,7 @@ cfg_nasmodel = {
     "numOfInnerCell": len(trainMatrix[0]),
     "numOfOperations": len(PRIMITIVES),
     "cuddbenchMark": False,
+    "numOfKth": len(seed)
     
 }
 
@@ -104,7 +118,7 @@ cfg_newnasmodel = {
     'clip': False,
     'loc_weight': 1.0,
     'gpu_train': True,
-    'batch_size': 128,
+    'batch_size': 64,
     'ngpu': 1,
     'epoch': 45,
     'decay1': 70,
@@ -117,7 +131,8 @@ cfg_newnasmodel = {
     "numOfLayers": len(trainMatrix),
     "numOfInnerCell": len(trainMatrix[0]),
     "numOfOperations": len(PRIMITIVES),
-    "cuddbenchMark": False
+    "cuddbenchMark": False,
+    "numOfKth": len(seed)
 }
 
 folder = {

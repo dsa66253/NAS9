@@ -42,6 +42,7 @@ exp2IniFunc = {
 def TsengInitializeWeights(model, seed):
     for m in model.modules():
         if isinstance(m, nn.Conv2d):
+            set_seed_cpu(seed)
             torch.nn.init.kaiming_normal_(m.weight)
         elif isinstance(m, nn.BatchNorm2d):
             if m.weight is not None:
