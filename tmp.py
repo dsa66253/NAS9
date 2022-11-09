@@ -59,6 +59,7 @@ def parse_args(k):
     return args
 
 
+
 def saveAccLoss(kth, lossRecord, accRecord):
     print("save record to ", folder["accLossDir"])
     try:
@@ -336,6 +337,35 @@ if __name__ == '__main__':
         accelerateByGpuAlgo(cfg["cuddbenchMark"])
         set_seed_cpu(seed_weight)
         #! test same initial weight
+        accRecord = {
+            "train": np.load(trainNasTrainAccFile),
+            "val": np.load(trainNasnValAccFile),
+            # "test": np.load(testAccFile)
+            }
+        plot_acc_curves(accRecord, axs[kth], "acc_"+str(kth), "./plot")
+    fileName = trainType+"_"+title
+    print("save png to ", os.path.join(saveFolder, fileName))
+    plt.savefig(os.path.join(saveFolder, fileName))
+
+
+if __name__=="__main__":
+    
+    # Serial = "5B134977135E7D13"
+    # Name = ''
+    # a = [16, 32, 48]
+    # for i in range(len(Serial)//2):
+    #     Name += chr(int(Serial[2*i:2*i+2], 16) ^ a[i%3])
+    # print(Name)
+    # net = "alexnet"
+    # folder = "./accLoss" 
+    # title='combine_'+net
+    # saveFolder="./plot"
+    # fig, axs = plt.subplots(1, figsize=(10, 8), sharex=True, constrained_layout=True)
+    # for kth in range(1):
+    #     trainNasTrainAccFile = os.path.join(folder, "trainNasTrainAcc_{}.npy".format(str(kth)) )
+    #     trainNasnValAccFile = os.path.join( folder,"trainNasValAcc_{}.npy".format(str(kth)) )
+    #     testAccFile = os.path.join(folder, "trainNasTestAcc_{}.npy".format(str(kth)) )
+>>>>>>> 5464d546c0c1febfe4854fbddaeab6938cb51b20
         
         makeAllDir()
             
