@@ -416,6 +416,7 @@ def myTrain(kth, trainData, train_loader, val_loader, net, model_optimizer, nas_
 
 
 if __name__ == '__main__':
+    print(torch.version.cuda)
     device = get_device()
     torch.device(device)
     print("running on device: {}".format(device))
