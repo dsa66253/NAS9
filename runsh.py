@@ -38,36 +38,36 @@ def doExpBasedExperiments():
 def brutNas():
     # this funciion also handle decode job
     initiManualAssign = {
-        "layer_0_4": [
+        "layer_0_1": [
             0,
+            0,
+            0,
+            0,
+            1
+        ],
+        "layer_1_2": [
+            0,
+            0,
+            1,
+            0,
+            0
+        ],
+        "layer_2_3": [
+            1,
             0,
             0,
             0,
             0
         ],
-        # "layer_1_2": [
-        #     0,
-        #     0,
-        #     0,
-        #     0,
-        #     0
-        # ],
-        # "layer_2_3": [
-        #     1,
-        #     0,
-        #     0,
-        #     0,
-        #     0
-        # ],
-        # "layer_1_4": [
-        #     0,
-        #     0,
-        #     0,
-        #     0,
-        #     0
-        # ],
-        "layer_4_5": [
+        "layer_3_4": [
+            1,
             0,
+            0,
+            0,
+            0
+        ],
+        "layer_4_5": [
+            1,
             0,
             0,
             0,
@@ -82,10 +82,11 @@ def brutNas():
             # for second layer
             manualAssign = copy.deepcopy(initiManualAssign)
             
-            manualAssign["layer_0_4"][i] = 1
-            manualAssign["layer_4_5"][j] = 1
+            # manualAssign["layer_0_4"][i] = 1
+            # manualAssign["layer_4_5"][j] = 1
             f = setStdoutToFile("./curExperiment.json")
-            curExpName = "1117_2.brutL0L1.{}_{}".format(i, j)
+            curExpName = "1119.brutL0L1.{}_{}".format(i, j)
+            curExpName = "1119_3"
             desDir = join("./log", curExpName)
             print(json.dumps({curExpName:1}, indent=4))
             setStdoutToDefault(f)
@@ -100,7 +101,8 @@ def brutNas():
                 setStdoutToDefault(f)   
             
             subprocess.call('./train.sh')
-            # exit()
+            
+            exit()
             
 
 if __name__=="__main__":
