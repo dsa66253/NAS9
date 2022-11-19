@@ -104,6 +104,7 @@ def prepareModel(kth):
     print("net.cellArch:", net.cellArch)
     print("net", net)
     initialize_weights(net, seed_weight)
+    # tmpF(net)
     return net
 def prepareOpt(net):
     return optim.SGD(net.getWeight(), lr=initial_lr, momentum=momentum,
@@ -153,10 +154,11 @@ def compareNet(alexnet, net):
         
         
 def tmpF(net):
+    print("tmpF")
     for netLayerName , netLyaerPara in net.named_parameters():
         print(netLayerName)
-        print(netLyaerPara.data.sum())
-        break
+        print(netLyaerPara.data)
+        
 def weightCount(net):
     count = 0
     for netLayerName , netLyaerPara in net.named_parameters():
