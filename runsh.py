@@ -38,7 +38,7 @@ def doExpBasedExperiments():
 def brutNas():
     # this funciion also handle decode job
     initiManualAssign = {
-        "layer_0_1": [
+        "layer_0_4": [
             0,
             0,
             0,
@@ -47,7 +47,7 @@ def brutNas():
         ],
         # "layer_1_2": [
         #     0,
-        #     1,
+        #     0,
         #     0,
         #     0,
         #     0
