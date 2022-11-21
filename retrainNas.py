@@ -41,7 +41,7 @@ def printNetGrad(net):
 def parse_args(k=0):
     parser = argparse.ArgumentParser(description='imagenet nas Training')
     parser.add_argument('--network', default='newnasmodel', help='Backbone network mobile0.25 or resnet50')
-    parser.add_argument('--num_workers', default=0, type=int, help='Number of workers used in dataloading')
+    parser.add_argument('--num_workers', default=4, type=int, help='Number of workers used in dataloading')
     parser.add_argument('--lr', '--learning-rate', default=1e-3, type=float, help='initial learning rate')
     parser.add_argument('--momentum', default=0.9, type=float, help='momentum')
     parser.add_argument('--resume_net', default=None, help='resume net for retraining')
