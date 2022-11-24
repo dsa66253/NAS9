@@ -76,9 +76,9 @@ def brutNas():
     }
     # brutally train all possible arch of first two layers
 
-    for i in range(5):
+    for i in range(4, -1, -1):
         # for fisrt layer
-        for j in range(5):
+        for j in range(4, -1, -1):
             # for second layer
             manualAssign = copy.deepcopy(initiManualAssign)
             
