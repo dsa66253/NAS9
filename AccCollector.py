@@ -26,9 +26,9 @@ class AccCollector():
                     #* get last epoch acc
                     loadPath = "./log/{}/{}.{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), dataset, str(k)) 
                     # print(loadPath)
-                    acc = round(np.load(loadPath)[-1], 2)
+                    # acc = round(np.load(loadPath)[-1], 2)
                     #* get test acc by correspoding max val acc
-                    # acc = self.__getAccByMaxVal(i, j, k, baseDir)
+                    acc = self.__getAccByMaxVal(i, j, k, baseDir)
                     data.append(acc)
                     # self.a.append([expAcc, k , acc])
                 a.append(data)
@@ -207,11 +207,12 @@ def getLoss():
         accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
     np.set_printoptions(precision=2)
-    # accC = AccCollector("1028_2brutL3L4", fileNameTag="")
-    # testOrVal = "test"
-    # accC.addExp("1028_2brutL3L4", color="red", dataset=testOrVal, title="1028_2brutL3L4")
-    # accC.addExp("1029_brutL3L4", color="green", dataset=testOrVal, title="1029_brutL3L4")
-    # accC.addExp("1103_brutL3L4", color="blue", dataset=testOrVal, title="1103_brutL3L4")
+    accC = AccCollector("1118_2.brutL0L1", fileNameTag="")
+    testOrVal = "test"
+    # accC.addExp("1118_2.brutL0L1", color="red", dataset=testOrVal, title="1118_2.brutL0L1")
+    # accC.addExp("1119_5.brutL0L1", color="green", dataset=testOrVal, title="1119_5.brutL0L1")
+    # accC.addExp("1119_6.brutL0L1", color="blue", dataset=testOrVal, title="brutL0L1")
+    # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
     # accC.savePlt(dataset=testOrVal)
     getLoss()
     # accC.addExp("1027_brutL3L4", color="red", dataset="test", title="1027_brutL3L4")
