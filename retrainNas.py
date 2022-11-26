@@ -71,9 +71,10 @@ def prepareDataSet():
     datasetHandler = DatasetHandler(trainDataSetFolder, cfg, seed_weight)
     # datasetHandler.addAugmentDataset(transforms.RandomHorizontalFlip(p=1))
     # datasetHandler.addAugmentDataset(transforms.RandomRotation(degrees=10))
+    print("dataset:", trainDataSetFolder)
     print("training dataset set size:", len(datasetHandler.getTrainDataset()))
     print("val dataset set size:", len(datasetHandler.getValDataset()))
-    
+    print("class_to_idx", datasetHandler.getClassToIndex())
     return datasetHandler.getTrainDataset(), datasetHandler.getValDataset()
 
 def prepareDataLoader(trainData, valData):
@@ -248,6 +249,7 @@ if __name__ == '__main__':
         if stdoutTofile:
             f = setStdoutToFile(folder["log"]+"/retrain_5cell_{}th.txt".format(str(k)))
         
+        print("working directory ", os.getcwd())
         #info set seed
         seed_weight = seed[str(k)]
             
