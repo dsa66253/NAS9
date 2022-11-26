@@ -201,6 +201,7 @@ def myTrain(kth, trainData, trainDataLoader, valDataLoader, net, model_optimizer
             inputs, labels = inputs.to(device), labels.to(device)
             model_optimizer.zero_grad() 
             outputs = net(inputs) 
+
             batch_loss = criterion(outputs, labels)
             _, train_pred = torch.max(outputs, 1) # get the index of the class with the highest probability
             batch_loss.backward() 
