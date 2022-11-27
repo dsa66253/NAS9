@@ -1,3 +1,4 @@
+from operator import indexOf
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 import numpy as np
@@ -49,10 +50,7 @@ def plot_acc_curves(accRecord, ax, title='default', saveFolder="./"):
     ax.plot(accRecord['train'], c='tab:red', label='train')
     ax.plot(accRecord['val'], c='tab:cyan', label='val')
     valMa = createMAvg(accRecord['val'])
-    # print(accRecord['val'])
-    # print(valMa)
-    # exit()
-    ax.plot(valMa, linestyle='--', c='tab:cyan', label='valMa')
+    ax.plot(accRecord['val'], "-", c='tab:cyan', label='valMa')
     try:
         ax.plot(accRecord['test'], c='tab:brown', label='test')
     except Exception as e:
@@ -96,25 +94,12 @@ def plot_combined_acc(folder = "./accLoss", title='combine', saveFolder="./plot"
         fileName = trainType+"_"+  str(indexOfFig)
         print("save png to ", os.path.join(saveFolder, fileName))
         plt.savefig(os.path.join(saveFolder, fileName))
-        plt.close()
+
 
 if __name__=="__main__":
     # plot_combined_acc(trainType="Nas")
-    expNameList = ["1028_2brutL3L4", "1110_2brutL0L1", "1111_brutL0L1", "1118_2.brutL0L1", "1118.brutL0L1", "1119_5.brutL0L1", "1120.brutL0L1"]
-    for expName in expNameList:
-        # expName = "1119_6.brutL0L1"
-        baseFolder = os.path.join("./log", expName)
-        for i in range(5):
-            for j in range(5):
-                subBaseFolder = baseFolder
-                folder = "./log/{}/{}.{}_{}/accLoss".format(expName, expName, str(i), str(j))
-                saveFolder = os.path.join(baseFolder, expName+".{}_{}".format(str(i), str(j)), "plot")
-                # print(folder)
-                # print(saveFolder)
-                try:
-                    plot_combined_acc(folder = folder, trainType="retrain", saveFolder=saveFolder)
-                except:
-                    print("got wrong on ", expName+".{}_{}".format(str(i), str(j)))
+    # folder = 
+    plot_combined_acc(trainType="retrain")
     # net = "alexnet"
     # folder = "./accLoss" 
     # title='combine_'+net

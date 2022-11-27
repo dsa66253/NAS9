@@ -4,7 +4,19 @@ from matplotlib.pyplot import figure
 import numpy as np
 import os
 from data.config import cfg_newnasmodel as cfg
-
+def createMAvg(input):
+    howMany = 5
+    ma = np.copy(input)
+    for i in range(0, len(input)):
+        window = []
+        for j in range(-2, -2+howMany):
+            if i+j>=0 and i+j<len(input):
+                # print(i+j)
+                window.append(input[i+j])
+        # print(input)
+        ma[i] = np.mean(window)
+        # print(i, window, ma[i])
+    return ma
 def plot_loss_curve(lossRecord, title='default', saveFolder="./"):
     ''' Plot learning curve of your DNN (train & dev loss) '''
     figure(figsize=(6, 4))
