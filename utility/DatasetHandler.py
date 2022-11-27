@@ -1,4 +1,3 @@
-from __future__ import print_function
 from torchvision import transforms
 import torch
 import torch.optim as optim
