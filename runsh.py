@@ -38,7 +38,7 @@ def doExpBasedExperiments():
 def brutNas():
     # this funciion also handle decode job
     initiManualAssign = {
-        "layer_0_4": [
+        "layer_0_1": [
             0,
             0,
             0,
@@ -52,7 +52,7 @@ def brutNas():
         #     0,
         #     0
         # ],
-        "layer_4_5": [
+        "layer_1_5": [
             0,
             0,
             0,
@@ -68,10 +68,10 @@ def brutNas():
             # for second layer
             manualAssign = copy.deepcopy(initiManualAssign)
             
-            manualAssign["layer_0_4"][i] = 1
-            manualAssign["layer_4_5"][j] = 1
+            manualAssign["layer_0_1"][i] = 1
+            manualAssign["layer_1_5"][j] = 1
             f = setStdoutToFile("./curExperiment.json")
-            curExpName = "1126.brutL0L1.{}_{}".format(i, j)
+            curExpName = "1127.brutL0L1.{}_{}".format(i, j)
             desDir = join("./log", curExpName)
             print(json.dumps({curExpName:1}, indent=4))
             setStdoutToDefault(f)
