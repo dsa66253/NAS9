@@ -1,8 +1,7 @@
-# 测试集
 import argparse
 from tqdm import tqdm
 import os
-import sys
+import copy
 from pathlib import Path
 import numpy as np
 import torch
@@ -88,7 +87,61 @@ def prepareChekcPointModel(num_classes, kth, epoch):
         print("Fail to load model from ", modelLoadPath)
         print(e)
         exit()
-        
+def prepareAvgModel(num_classes, kth):
+    #info preparing trained NAS model
+    numOfModel = 3
+    if args.network == "newnasmodel":
+        try :
+            #info prepare architecture
+            #info load decode json
+            filePath = os.path.join(folder["decode"], "{}th_decode.json".format(kth))
+            f = open(filePath)
+            archDict = json.load(f)
+            
+            print("archDict", archDict)
+        except:
+            print("Fail to load architecture from ", filePath)
+            exit()
+            
+        try:
+            #info prepare model
+            net = NewNasModel(cellArch=archDict)
+            toModelWeight = None
+            for i in range(numOfModel):
+                print("preparing model ", "NewNasModel{}_Final.pt".format(kth+i))
+                modelLoadPath = os.path.join( folder["retrainSavedModel"], "NewNasModel{}_Final.pt".format(kth+i) )
+                tmpModelWeight = torch.load( modelLoadPath )
+                # for k in tmpModelWeight:
+                #     if "conv_5x5.op.0.weight" in k:
+                #         print("tmpModelWeight[k]", tmpModelWeight[k])
+                #         break
+                for k in tmpModelWeight:
+                    if toModelWeight==None:
+                        toModelWeight = copy.deepcopy(tmpModelWeight)
+                        break
+                    else:
+                        toModelWeight[k] = toModelWeight[k] + tmpModelWeight[k]
+            for k in toModelWeight:
+                toModelWeight[k] = toModelWeight[k] / numOfModel
+            for k in toModelWeight:
+                if "conv_5x5.op.0.weight" in k:
+                    # print("toModelWeight[k]", toModelWeight[k])
+                    break
+            # modelLoadPath = os.path.join( folder["retrainSavedModel"], "NewNasModel{}_Final.pt".format(kth) )
+            net.load_state_dict( toModelWeight )
+            # print("torch.load( modelLoadPath )", torch.load( modelLoadPath ).keys())
+            # for k, v in net.named_parameters():
+            #     if "conv_5x5.op.0.weight" in k:
+            #         print("v", v)
+            net = net.to(device)
+            net.eval()
+            print("Loading model from ", modelLoadPath)
+            return net
+        # todo test.py go wrong, check pytorch document how to test model
+        except Exception as e:
+            print("Fail to load model from ", modelLoadPath)
+            print(e)
+            exit()
 def prepareModel(num_classes, kth):
     print("preparing model: ", args.network)
     #info preparing alexnet model
@@ -126,7 +179,9 @@ def prepareModel(num_classes, kth):
             net = NewNasModel(cellArch=archDict)
             print("net ", net)
             modelLoadPath = os.path.join( folder["retrainSavedModel"], "NewNasModel{}_Final.pt".format(kth) )
-            net.load_state_dict( torch.load( modelLoadPath ) )
+            modelWeight = torch.load( modelLoadPath )
+            # print("torch.load( modelLoadPath )", torch.load( modelLoadPath ).keys())
+            net.load_state_dict( modelWeight )
             net = net.to(device)
             net.eval()
             print("Loading model from ", modelLoadPath)
@@ -195,7 +250,7 @@ class TestController:
             if v.requires_grad:
                 print (k, v.data.sum())
             
-    def test(self, net):
+    def test(self, net, showOutput=False):
         confusion_matrix_torch = torch.zeros(self.num_classes, self.num_classes)
         net.eval()
         # print(net)
@@ -235,7 +290,7 @@ if __name__ == '__main__':
     torch.set_printoptions(precision=6, sci_mode=False, threshold=1000)
     device = get_device()
     valList = []
-    for kth in range(cfg["numOfKth"]):
+    for kth in range(3):
         #info handle stdout to a file
         if stdoutTofile:
             trainLogDir = "./log"
@@ -282,8 +337,11 @@ if __name__ == '__main__':
         
         #info test final model
         net = prepareModel(num_classes, kth)
-        
         last_epoch_val_acc = testC.test(net)
+        # print("normal model", last_epoch_val_acc)
+        # net = prepareAvgModel(num_classes, kth)
+        # last_epoch_val_acc = testC.test(net)
+        # print("Avg model", last_epoch_val_acc)
         # testC.printAllModule(net)
         # exit()
         valList.append(last_epoch_val_acc)
@@ -292,3 +350,4 @@ if __name__ == '__main__':
         
         if stdoutTofile:
             setStdoutToDefault(f)
+        # exit()
