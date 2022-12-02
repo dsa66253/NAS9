@@ -38,7 +38,7 @@ def doExpBasedExperiments():
 def brutNas():
     # this funciion also handle decode job
     initiManualAssign = {
-        "layer_0_2": [
+        "layer_0_4": [
             0,
             0,
             0,
@@ -52,7 +52,7 @@ def brutNas():
         #     0,
         #     0
         # ],
-        "layer_2_5": [
+        "layer_4_5": [
             0,
             0,
             0,
@@ -62,16 +62,16 @@ def brutNas():
     }
     # brutally train all possible arch of first two layers
 
-    for i in range(5):
+    for i in range(3, 5):
         # for fisrt layer
         for j in range(5):
-            # for second layer
+            # for second layeer
             manualAssign = copy.deepcopy(initiManualAssign)
             
-            manualAssign["layer_0_2"][i] = 1
-            manualAssign["layer_2_5"][j] = 1
+            manualAssign["layer_0_4"][i] = 1
+            manualAssign["layer_4_5"][j] = 1
             f = setStdoutToFile("./curExperiment.json")
-            curExpName = "1127_2.brutL0L1.{}_{}".format(i, j)
+            curExpName = "1129_4.brutL0L1.{}_{}".format(i, j)
             desDir = join("./log", curExpName)
             print(json.dumps({curExpName:1}, indent=4))
             setStdoutToDefault(f)
