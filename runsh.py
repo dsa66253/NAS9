@@ -86,7 +86,7 @@ def brutNas():
     for i in range(5):
         # for fisrt layer
         for j in range(5):
-            # for second layer
+            # for second layeer
             manualAssign = copy.deepcopy(initiManualAssign)
             
             manualAssign["layer_2_4"][i] = 1
