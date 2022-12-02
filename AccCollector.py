@@ -132,14 +132,15 @@ class AccCollector():
                     testIndex = np.argmax(testAcc)
                     valAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_val_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(k)) )
                     valIndex = np.argmax(valAcc)
-                    firstNegMaIndex = self.getFirstNegMaIndex(valAcc)
+                    firstNegMaIndex = self.getFirstNegMaIndex(valAcc, startEpoch=10)
                     # print(firstNegMaIndex)
                     # print(valAcc[:firstNegMaIndex])
                     # print(testAcc[:firstNegMaIndex])
-                    # valIndex = np.argmax(valAcc[:firstNegMaIndex])
-                    if testIndex<20:
-                        print(expName, i, j, k)
-                        print("index", testIndex, valIndex, "acc", testAcc[testIndex], testAcc[valIndex])
+                    valIndex = np.argmax(valAcc[:firstNegMaIndex])
+                    
+                    # if testIndex<20:
+                    #     print(expName, i, j, k)
+                    #     print("index", testIndex, valIndex, "acc", testAcc[testIndex], testAcc[valIndex])
                     toHistList.append(testIndex)
                     total = total + 1
                     if testIndex==valIndex:
@@ -148,10 +149,9 @@ class AccCollector():
                         loss = loss + (abs(testAcc[testIndex] - testAcc[valIndex]))
         histDrawer.drawHist(torch.tensor(toHistList, dtype=torch.float32), fileName="maxTestAcc", tag=expName)
         print(hit, total, "hit rate", hit/total)
-        print("average loss ", loss/total)
-    def getFirstNegMaIndex(self, ma):
+        print("Avg loss ", loss/total)
+    def getFirstNegMaIndex(self, ma, startEpoch=10):
         stopEpoch = 10
-        startEpoch = 10
         derivativeMa = [0] #have no previous acc at first epoch
         
         #info calculate deravitive by dy=0
@@ -168,6 +168,8 @@ class AccCollector():
             if derivativeMa[i]<0 and i>startEpoch:
                 firstNegMaIndex=i
                 break
+        if firstNegMaIndex==0:
+            firstNegMaIndex=startEpoch
         # print(derivativeMa[firstNegMaIndex-1:firstNegMaIndex+2])
         # exit()
         return firstNegMaIndex
@@ -200,14 +202,14 @@ class AccCollector():
         return ma
 def getLoss():
     expList = ["1027_brutL3L4", "1028_2brutL3L4", "1029_2brutL3L4", "1029_brutL3L4", "1103_brutL3L4", "1111_2brutL0L1"]
-    expList = ["1027_brutL3L4"]
+    expList = ["1117_2.brutL0L1"]
     for exp in expList:
         print(exp)
         accC = AccCollector(exp, fileNameTag="")
         accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
     np.set_printoptions(precision=2)
-    accC = AccCollector("1118_2.brutL0L1", fileNameTag="")
+    accC = AccCollector("1117_2.brutL0L1", fileNameTag="")
     testOrVal = "test"
     # accC.addExp("1118_2.brutL0L1", color="red", dataset=testOrVal, title="1118_2.brutL0L1")
     # accC.addExp("1119_5.brutL0L1", color="green", dataset=testOrVal, title="1119_5.brutL0L1")

@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 import torch.optim as optim
-from . initWeight import initialize_weights
+from .initWeight import initialize_weights
 OPS = {
     #'conv_1x1': lambda C_in, C_out, stride, affine, use_ABN: Conv(C_in, C_out, kernelSize, stride, padding, affine=affine),
     'conv_3x3': lambda C_in, C_out, stride, affine, use_ABN: Conv(C_in, C_out, 3, stride, 1, affine=affine),
@@ -20,7 +20,7 @@ class Conv(nn.Module):
             nn.BatchNorm2d(C_out, affine=affine),
             nn.ReLU(inplace=False),
         )
-        self.switch = True #* this conv will be used
+        self.switch = True #* True means conv will be used
         # self.linear = nn.Linear(8, 2)
         self.__initialize_alphas()
         # self.__initialize_weights() #* initialize kernel weights

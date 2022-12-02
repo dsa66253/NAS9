@@ -56,7 +56,7 @@ def initialize_weights(model, seed):
     print("cuurent experiment", curExp)
     # TsengInitializeWeights(model, seed)
     for m in model.modules():
-        if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+        if isinstance(m, nn.Conv2d):
             set_seed_cpu(seed)
             # exp2IniFunc[curExp](m.weight)
             # torch.nn.init.kaiming_normal_(m.weight)
