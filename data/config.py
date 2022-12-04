@@ -1,6 +1,6 @@
 # config.py
 from joblib import PrintTime
-datasetRoot = "../dataset"
+datasetRoot = "../dataset12"
 trainDataSetFolder = datasetRoot+"/train"
 testDataSetFolder = datasetRoot+"/test"
 PRIMITIVES = [
@@ -122,7 +122,7 @@ cfg_newnasmodel = {
     'pretrain': False,
     'in_channel': 8,
     'out_channel': 64,
-    "numOfClasses": 10,
+    "numOfClasses": 20,
     "numOfLayers": len(trainMatrix),
     "numOfInnerCell": len(trainMatrix[0]),
     "numOfOperations": len(PRIMITIVES),
