@@ -45,8 +45,8 @@ def brutNas():
             0,
             0
         ],
-        "layer_1_4": [
-            0,
+        "layer_1_2": [
+            1,
             0,
             0,
             0,
@@ -66,13 +66,13 @@ def brutNas():
         #     0,
         #     0
         # ],
-        # "layer_3_4": [
-        #     1,
-        #     0,
-        #     0,
-        #     0,
-        #     0
-        # ],
+        "layer_2_4": [
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
         "layer_4_5": [
             0,
             0,
@@ -89,10 +89,10 @@ def brutNas():
             # for second layeer
             manualAssign = copy.deepcopy(initiManualAssign)
             
-            manualAssign["layer_1_4"][i] = 1
+            manualAssign["layer_2_4"][i] = 1
             manualAssign["layer_4_5"][j] = 1
             f = setStdoutToFile("./curExperiment.json")
-            curExpName = "1204_3.brutL1L2.{}_{}".format(i, j)
+            curExpName = "1204.brutL2L3.{}_{}".format(i, j)
             desDir = join("./log", curExpName)
             print(json.dumps({curExpName:1}, indent=4))
             setStdoutToDefault(f)
