@@ -268,8 +268,8 @@ class TestController:
                 # print("predict", predict.shape, predict)
                 # print("labels", labels.shape, labels)
                 correct += (predict == labels).sum().item()
-                for t, p in zip(labels.view(-1), predict.view(-1)):
-                    confusion_matrix_torch[t.long(), p.long()] += 1
+                # for t, p in zip(labels.view(-1), predict.view(-1)):
+                #     confusion_matrix_torch[t.long(), p.long()] += 1
                 # print("outputs ", outputs)
                 # print("predict", predict)
                 # print("labels", labels)
@@ -290,7 +290,7 @@ if __name__ == '__main__':
     torch.set_printoptions(precision=6, sci_mode=False, threshold=1000)
     device = get_device()
     valList = []
-    for kth in range(3):
+    for kth in range(cfg["numOfKth"]):
         #info handle stdout to a file
         if stdoutTofile:
             trainLogDir = "./log"
