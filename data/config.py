@@ -37,10 +37,6 @@ featureMap = {
         "channel":256,
         "featureMapDim":4
     },
-    "f6":{
-        "channel":256,
-        "featureMapDim":4
-    }
 }
 trainMatrix = [
     [[1, 1, 1, 1, 1]],
@@ -55,7 +51,6 @@ featureMapDim = [
     256,
     384,
     384,
-    256,
     256,
 ]
 seed = {

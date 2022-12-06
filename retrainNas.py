@@ -28,7 +28,6 @@ from torchvision import transforms
 from  utility.DatasetReviewer import DatasetReviewer
 import json 
 from utility.HistDrawer import HistDrawer
-# from train_nas_5cell import prepareDataloader
 from models.initWeight import initialize_weights
 from utility.ValController import ValController
 stdoutTofile = True
@@ -98,9 +97,9 @@ def prepareModel(kth):
         
     #info prepare model
     print("Preparing model...")
+    set_seed_cpu(seed_weight)
     net = NewNasModel(cellArch=archDict)
     net.train()
-    # net.eval()
     net = net.to(device)
     print("net.cellArch:", net.cellArch)
     print("net", net)
@@ -206,7 +205,6 @@ def myTrain(kth, trainData, trainDataLoader, valDataLoader, net, model_optimizer
             _, train_pred = torch.max(outputs, 1) # get the index of the class with the highest probability
             batch_loss.backward() 
             model_optimizer.step() 
-
             train_acc += (train_pred.cpu() == labels.cpu()).sum().item()
             train_loss += batch_loss.item()
             

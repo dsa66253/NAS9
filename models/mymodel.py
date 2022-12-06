@@ -153,7 +153,6 @@ class Model(nn.Module):
                 break
         return output
     def forward2(self, input):
-        print("forward")
         output=None
         for layerName in self.layerDict:
             if output==None:

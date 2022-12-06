@@ -142,8 +142,8 @@ def plot_line_chart_all_file():
 
     for fileName in sorted(listdir(folder["alpha_pdart_nodrop"])):
         #* load alpha npy file
-        fileNameList.append(os.path.join(folder["alpha_pdart_nodrop"], fileName))
         filePath = os.path.join(folder["alpha_pdart_nodrop"], fileName)
+        fileNameList.append(filePath)
         allAlphas = np.load(filePath)
         plot_line_chart_innercell(allAlphas, fileName=fileName.split(".")[0])
         # allAlphas = [[0.2, 0.2, 0.2, 0.2, 0.2]

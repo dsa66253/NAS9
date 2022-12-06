@@ -42,10 +42,16 @@ def brutNas():
             0,
             0,
             0,
+            0
+        ],
+        "layer_1_2": [
+            1,
+            0,
+            0,
             0,
             0
         ],
-        # "layer_3_4": [
+        # "layer_2_3": [
         #     1,
         #     0,
         #     0,
@@ -65,7 +71,7 @@ def brutNas():
     for i in range(5):
         # for fisrt layer
         for j in range(5):
-            # for second layer
+            # for second layeer
             manualAssign = copy.deepcopy(initiManualAssign)
             
             manualAssign["layer_0_4"][i] = 1
