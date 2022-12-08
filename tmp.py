@@ -1,4 +1,3 @@
-from operator import indexOf
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 import numpy as np
@@ -49,8 +48,7 @@ def plot_acc_curves(accRecord, ax, title='default', saveFolder="./"):
     totalEpoch = len(accRecord["train"])
     ax.plot(accRecord['train'], c='tab:red', label='train')
     ax.plot(accRecord['val'], c='tab:cyan', label='val')
-    valMa = createMAvg(accRecord['val'])
-    ax.plot(accRecord['val'], "-", c='tab:cyan', label='valMa')
+    
     try:
         ax.plot(accRecord['test'], c='tab:brown', label='test')
     except Exception as e:
@@ -94,12 +92,93 @@ def plot_combined_acc(folder = "./accLoss", title='combine', saveFolder="./plot"
         fileName = trainType+"_"+  str(indexOfFig)
         print("save png to ", os.path.join(saveFolder, fileName))
         plt.savefig(os.path.join(saveFolder, fileName))
+        
 
+        
+class AccDrawer():
+    def __init__(self, expName="", baseDir="./") -> None:
+        self.expName = expName
+        self.baseDir = baseDir
+    def createMAvg(self, input):
+        howMany = 5
+        ma = np.copy(input)
+        for i in range(0, len(input)):
+            window = []
+            for j in range(-2, -2+howMany):
+                if i+j>=0 and i+j<len(input):
+                    # print(i+j)
+                    window.append(input[i+j])
+            # print(input)
+            ma[i] = np.mean(window)
+            # print(i, window, ma[i])
+        return ma
+    def plot_combined_acc(self, sourceFolder = "accLoss", title='combine', saveFolder="plot", trainType="Nas"):
+        numOfAx = 3
+        indexOfAx = 0
+        numOfFig = cfg["numOfKth"] // numOfAx
+        indexOfFig = 0
+        
+        for i in range(numOfFig):
+            fig, axs = plt.subplots(numOfAx, 1, figsize=(10, 8), sharex=True, constrained_layout=True)
+            for kth in range(numOfAx):
+                trainNasTrainAccFile = os.path.join(sourceFolder, "{}_train_acc_{}.npy".format(trainType, str(indexOfAx)) )
+                trainNasnValAccFile = os.path.join( sourceFolder,"{}_val_acc_{}.npy".format(trainType, str(indexOfAx)) )
+                testAccFile = os.path.join( sourceFolder,"{}_test_acc_{}.npy".format(trainType, str(indexOfAx)) )
+                # testAccFile = os.path.join(folder, "trainNasTestAcc_{}.npy".format(trainType, str(kth)) )
+                try:
+                    accRecord = {
+                        "train": np.load(trainNasTrainAccFile),
+                        "val": np.load(trainNasnValAccFile),
+                        "test": np.load(testAccFile)
+                    }
+                except:
+                    accRecord = {
+                        "train": np.load(trainNasTrainAccFile),
+                        "val": np.load(trainNasnValAccFile),
+                        # "test": np.load(testAccFile)
+                    }
+                self.plot_acc_curves(accRecord, axs[kth], "acc_"+str(indexOfAx))
+                indexOfAx = indexOfAx + 1
+            indexOfFig = indexOfFig + 1
+            fileName = trainType+"_"+  str(indexOfFig)
+            print("save png to ", os.path.join(saveFolder, fileName))
+            plt.savefig(os.path.join(saveFolder, fileName))
+        plt.cla()
+        plt.close("all")
+    def plot_acc_curves(self, accRecord, ax, title='default'):
+        totalEpoch = len(accRecord["train"])
+        ax.plot(accRecord['train'], c='tab:red', label='train', marker = '.')
+        ax.plot(accRecord['val'], c='tab:cyan', label='val', marker = '.')
+        ma = self.createMAvg(accRecord['val'])
+        ax.plot(ma, c='y', label='valMA', marker = '.')
+        
+        try:
+            ax.plot(accRecord['test'], c='tab:brown', label='test', marker = '.')
+        except Exception as e:
+            print("null accRecord['test']", e)
+        ax.yaxis.grid()
+        ax.xaxis.grid()
+        ax.set_yticks(range(0, 110, 10))
+        ax.set_xticks(range(0, totalEpoch, 10))
+        ax.set_xlabel('epoch')
+        ax.set_ylabel('acc')
+        ax.set_title(format(title))
+        ax.legend()
+    
 
 if __name__=="__main__":
     # plot_combined_acc(trainType="Nas")
-    # folder = 
-    plot_combined_acc(trainType="retrain")
+    expList = ["1201.brutL0L1", "1202_3.brutL1L2", "1204.brutL2L3", "1129_2.brutL1L2", "1128.brutL1L2", "1126_3.brutL0L1", "1125_2.brutL2L3"]
+    for expName in expList:
+        for i in range(5):
+            for j in range(5):
+                # expName="1201.brutL0L1"
+                baseDir=os.path.join("./log", expName, "{}.{}_{}".format(expName, str(i), str(j)))
+                accD = AccDrawer(expName=expName, baseDir=baseDir)
+                sourceFolder = os.path.join(baseDir, "accLoss")
+                saveFolder = os.path.join(baseDir, "plot")
+                accD.plot_combined_acc(sourceFolder=sourceFolder, saveFolder=saveFolder, trainType="retrain")
+        
     # net = "alexnet"
     # folder = "./accLoss" 
     # title='combine_'+net
