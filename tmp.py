@@ -1,134 +1,230 @@
-from operator import indexOf
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import figure
 import numpy as np
+import torch
+import csv
 import os
-from data.config import cfg_newnasmodel as cfg
-def createMAvg(input):
-    howMany = 5
-    ma = np.copy(input)
-    for i in range(0, len(input)):
-        window = []
-        for j in range(-2, -2+howMany):
-            if i+j>=0 and i+j<len(input):
-                # print(i+j)
-                window.append(input[i+j])
-        # print(input)
-        ma[i] = np.mean(window)
-        # print(i, window, ma[i])
-    return ma
-def plot_loss_curve(lossRecord, title='default', saveFolder="./"):
-    ''' Plot learning curve of your DNN (train & dev loss) '''
-    figure(figsize=(6, 4))
-    plt.plot(lossRecord['train'], c='tab:red', label='train')
-    plt.plot(lossRecord['val'], c='tab:cyan', label='val')
-    plt.xlabel('epoch')
-    plt.ylabel('loss')
-    plt.title('Loss of {}'.format(title))
-    plt.legend()
+import matplotlib.pyplot as plt
+from utility.HistDrawer import HistDrawer
+class AccCollector():
+    def __init__(self, baseDir = "1027_brutL3L4", fileNameTag=""):
+        self.fileNameTag = fileNameTag
+        self.baseDir = baseDir
+        self.saveFolder="./tmp"
+        self.title = ""
+        self.ymax = 85
+        self.ymin = 65
+    def addExp(self, baseDir, color="red", dataset="val", title=""):
+        self.title = self.title +"."+ title + color
+        a = []
+        labels = []
+        for i in range(5):
+            for j in range(5):
+                expAcc = "{}.{}_{}".format(baseDir, i, j )
+                labels.append(expAcc)
+                data = []
+                for k in range(10):
+                    # base = os.walk(baseDir)
+                    #* get last epoch acc
+                    loadPath = "./log/{}/{}.{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), dataset, str(k)) 
+                    # print(loadPath)
+                    # acc = round(np.load(loadPath)[-1], 2)
+                    #* get test acc by correspoding max val acc
+                    acc = self.__getAccByMaxVal(i, j, k, baseDir)
+                    data.append(acc)
+                    # self.a.append([expAcc, k , acc])
+                a.append(data)
+        if hasattr(self, "axs"):
+            pass
+        else:
+            self.fig, self.axs = plt.subplots(1, 1, figsize=(10, 8), sharex=True, constrained_layout=True)
+        # ax = fig.add_axes([0, 0, 1, 1])
+        # print(baseDir, "a", a)
+        self.axs.boxplot(a, labels=labels,  showmeans=False,  boxprops=dict(color=color), meanprops=dict(color=color))
+        self.axs.yaxis.grid()
+        self.axs.xaxis.grid()
+        self.axs.set_title(self.title)
+        # self.axs.set_ylim([self.ymin, self.ymax])
+        self.axs.set_yticks(np.arange(self.ymin, self.ymax, 1))
+        plt.xticks(rotation=90)
+
     
-    plt.savefig(os.path.join(saveFolder, title))
+    def savePlt(self, dataset):
+        saveName = os.path.join("./log", self.baseDir, "box_"+dataset+self.fileNameTag)
+        print("save to ", saveName)
+        plt.savefig(saveName)
+        plt.close()
+    # def boxPlot(self, dataset="val"):
 
-def plot_acc_curve(accRecord, title='default', saveFolder="./"):
-    ''' Plot learning curve of your DNN (train & dev loss) '''
-    fig, ax = plt.subplot()
-    ax.plot(accRecord['train'], c='tab:red', label='train')
-    ax.plot(accRecord['val'], c='tab:cyan', label='val')
-    try:
-        ax.plot(accRecord['test'], c='tab:brown', label='test')
-    except Exception as e:
-        print("null accRecord['test']", e)
-    ax.set_xlabel('epoch')
-    ax.set_ylabel('acc')
-    ax.set_title(format(title))
-    ax.legend()
-    # plt.show()
-    plt.savefig(os.path.join(saveFolder, title)) 
-def plot_acc_curves(accRecord, ax, title='default', saveFolder="./"):
-    ''' Plot learning curve of your DNN (train & dev loss) '''
-    totalEpoch = len(accRecord["train"])
-    ax.plot(accRecord['train'], c='tab:red', label='train')
-    ax.plot(accRecord['val'], c='tab:cyan', label='val')
-    valMa = createMAvg(accRecord['val'])
-    ax.plot(accRecord['val'], "-", c='tab:cyan', label='valMa')
-    try:
-        ax.plot(accRecord['test'], c='tab:brown', label='test')
-    except Exception as e:
-        print("null accRecord['test']", e)
-    ax.yaxis.grid()
-    ax.xaxis.grid()
-    ax.set_yticks(range(0, 110, 10))
-    ax.set_xticks(range(0, totalEpoch, 10))
-    ax.set_xlabel('epoch')
-    ax.set_ylabel('acc')
-    ax.set_title(format(title))
-    ax.legend()
-def plot_combined_acc(folder = "./accLoss", title='combine', saveFolder="./plot", trainType="Nas"):
-    numOfAx = 3
-    indexOfAx = 0
-    numOfFig = cfg["numOfKth"] // numOfAx
-    indexOfFig = 0
-    
-    for i in range(numOfFig):
-        fig, axs = plt.subplots(numOfAx, 1, figsize=(10, 8), sharex=True, constrained_layout=True)
-        for kth in range(numOfAx):
-            trainNasTrainAccFile = os.path.join(folder, "{}_train_acc_{}.npy".format(trainType, str(indexOfAx)) )
-            trainNasnValAccFile = os.path.join( folder,"{}_val_acc_{}.npy".format(trainType, str(indexOfAx)) )
-            testAccFile = os.path.join( folder,"{}_test_acc_{}.npy".format(trainType, str(indexOfAx)) )
-            # testAccFile = os.path.join(folder, "trainNasTestAcc_{}.npy".format(trainType, str(kth)) )
-            try:
-                accRecord = {
-                    "train": np.load(trainNasTrainAccFile),
-                    "val": np.load(trainNasnValAccFile),
-                    "test": np.load(testAccFile)
-                }
-            except:
-                accRecord = {
-                    "train": np.load(trainNasTrainAccFile),
-                    "val": np.load(trainNasnValAccFile),
-                    # "test": np.load(testAccFile)
-                }
-            plot_acc_curves(accRecord, axs[kth], "acc_"+str(indexOfAx), "./plot")
-            indexOfAx = indexOfAx + 1
-        indexOfFig = indexOfFig + 1
-        fileName = trainType+"_"+  str(indexOfFig)
-        print("save png to ", os.path.join(saveFolder, fileName))
-        plt.savefig(os.path.join(saveFolder, fileName))
+    #     a = []
+    #     labels = []
+    #     for i in range(5):
+    #         for j in range(5):
+    #             expAcc = "{}.{}_{}".format(self.baseDir, i, j )
+    #             labels.append(expAcc)
+    #             data = []
+    #             for k in range(10):
+    #                 # base = os.walk(baseDir)
+    #                 acc = round(np.load("./log/{}/{}.{}_{}/accLoss/retrain_{}_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), dataset, str(k)) )[-1], 2)
+    #                 data.append(acc)
+    #                 # self.a.append([expAcc, k , acc])
+    #             a.append(data)
+    #     fig, axs = plt.subplots(1, 1, figsize=(10, 8), sharex=True, constrained_layout=True)
+    #     # ax = fig.add_axes([0, 0, 1, 1])
+    #     c = "red"
+    #     axs.boxplot(a, labels=labels,  showmeans=True,  boxprops=dict(color=c),)
+    #     axs.yaxis.grid()
+    #     axs.xaxis.grid()
+    #     axs.set_title("box_"+dataset)
+    #     plt.xticks(rotation=90)
+    #     saveName = os.path.join("./log", self.baseDir, "box_"+dataset+self.fileNameTag)
+    #     print("save to ", saveName)
+    #     plt.savefig(saveName)
+    #     plt.close()
+        # plt.savefig("plot.png")
+    def __getAccByMaxVal(self, i, j, k, baseDir):
+        valAcc = np.load( "./log/{}/{}.{}_{}/accLoss/retrain_val_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), str(k)) )
+        testAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_test_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), str(k)) )
+        valIndex = np.argmax(valAcc)
+        return round(testAcc[valIndex], 2)
+    def saveCsv(self, dataset):
+        self.a = []
+        total = 0
+        hit = 0
+        loss = 0
+        for i in range(5):
+            for j in range(5):
+                expAcc = "{}.{}_{}".format(self.baseDir, i, j )
+                tmp = [expAcc]
 
+                for k in range(10):
+                    # base = os.walk(baseDir)
+                    testAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_test_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(k)) )
+                    # acc = round(np.load("./log/{}/{}.{}_{}/accLoss/retrain_test_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(k)) )[-1], 2)
+                    # tmp.append(acc)
+                    testIndex = np.argmax(testAcc)
+                    valAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_val_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(k)) )
+                    valIndex = np.argmax(valAcc)
+                    
+                    # print(rawAcc)π
+                    # print(index, rawAcc[index])
+                    total = total + 1
+                    if testIndex==valIndex:
+                        hit = hit + 1
+                    else:
+                        loss = loss + (abs(testAcc[testIndex] - valAcc[valIndex]))
+                        print(testAcc[testIndex] - valAcc[valIndex])
+                    
+        print(hit, total, hit/total)
+        print(loss/(hit/total))
+    def calDiffValTest(self, dataset, expName):
+        histDrawer = HistDrawer("./tmp")
+        toHistList = []
+        self.a = []
+        total = 0
+        hit = 0
+        loss = 0
+        for i in range(5):
+            for j in range(5):
+                expAcc = "{}.{}_{}".format(self.baseDir, i, j )
+                tmp = [expAcc]
 
+                for k in range(10):
+                    testAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_test_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(k)) )
+                    testIndex = np.argmax(testAcc)
+                    valAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_val_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(k)) )
+                    valIndex = np.argmax(valAcc)
+                    firstNegMaIndex = self.getFirstNegMaIndex(valAcc, startEpoch=20)
+                    # print(firstNegMaIndex)
+                    # print(valAcc[:firstNegMaIndex])
+                    # print(testAcc[:firstNegMaIndex])
+                    valIndex = np.argmax(valAcc[:firstNegMaIndex])
+                    
+                    # if testIndex<20:
+                    #     print(expName, i, j, k)
+                    #     print("index", testIndex, valIndex, "acc", testAcc[testIndex], testAcc[valIndex])
+                    toHistList.append(testIndex)
+                    total = total + 1
+                    if testIndex==valIndex:
+                        hit = hit + 1
+                    else:
+                        loss = loss + (abs(testAcc[testIndex] - testAcc[valIndex]))
+        histDrawer.drawHist(torch.tensor(toHistList, dtype=torch.float32), fileName="maxTestAcc", tag=expName)
+        print(hit, total, "hit rate", hit/total)
+        print("Avg loss ", loss/total)
+    def getFirstNegMaIndex(self, ma, startEpoch=10):
+        stopEpoch = 10
+        derivativeMa = [0] #have no previous acc at first epoch
+        
+        #info calculate deravitive by dy=0
+        for i in range(1, len(ma)):
+            dx = ma[i]-ma[i-1]
+            dy = 1
+            derivativeMa.append(dx/dy)
+        # print(ma)
+        # print(derivativeMa)
+        # exit()
+        #info find index by condition
+        firstNegMaIndex=0
+        for i in range(len(derivativeMa)):
+            if derivativeMa[i]<0 and i>startEpoch:
+                firstNegMaIndex=i
+                break
+        if firstNegMaIndex==0:
+            firstNegMaIndex=startEpoch
+        # print(derivativeMa[firstNegMaIndex-1:firstNegMaIndex+2])
+        # exit()
+        return firstNegMaIndex
+    # def boxPlotCsv(self):
+    #     self.a = []
+    #     for i in range(5):
+    #         for j in range(5):
+    #             expAcc = "{}.{}_{}".format(self.baseDir, i, j )
+    #             for k in range(10):
+    #                 # base = os.walk(baseDir)
+    #                 acc = round(np.load("./log/{}/{}.{}_{}/accLoss/retrain_test_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(k)) )[-1], 2)
+
+    #                 self.a.append([expAcc, k , acc])
+    #     with open('./boxPlot.csv', 'w', newline='') as csvfile:
+    #         writer = csv.writer(csvfile, delimiter=',')
+    #         for row in self.a:
+    #             writer.writerow(row)
+    def createMAvg(input):
+        howMany = 5
+        ma = np.copy(input)
+        for i in range(0, len(input)):
+            window = []
+            for j in range(-2, -2+howMany):
+                if i+j>=0 and i+j<len(input):
+                    # print(i+j)
+                    window.append(input[i+j])
+            # print(input)
+            ma[i] = np.mean(window)
+            # print(i, window, ma[i])
+        return ma
+def getLoss():
+    expList = ["1027_brutL3L4", "1028_2brutL3L4", "1029_2brutL3L4", "1029_brutL3L4", "1103_brutL3L4", "1111_2brutL0L1"]
+    expList = ["1122_2.brutL0L1"]
+    for exp in expList:
+        print(exp)
+        accC = AccCollector(exp, fileNameTag="")
+        accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
-    # plot_combined_acc(trainType="Nas")
-    # folder = 
-    plot_combined_acc(trainType="retrain")
-    # net = "alexnet"
-    # folder = "./accLoss" 
-    # title='combine_'+net
-    # saveFolder="./plot"
-    # fig, axs = plt.subplots(1, figsize=(10, 8), sharex=True, constrained_layout=True)
-    # for kth in range(1):
-    #     trainNasTrainAccFile = os.path.join(folder, "trainNasTrainAcc_{}.npy".format(str(kth)) )
-    #     trainNasnValAccFile = os.path.join( folder,"trainNasValAcc_{}.npy".format(str(kth)) )
-    #     testAccFile = os.path.join(folder, "trainNasTestAcc_{}.npy".format(str(kth)) )
-        
-        
-    #     accRecord = {
-    #         "train": np.load(trainNasTrainAccFile)*100,
-    #         "val": np.load(trainNasnValAccFile)*100,
-    #         "test": np.load(testAccFile)*100
-    #         }
-    #     plot_acc_curves(accRecord, axs, "acc_"+str(kth), "./plot")
-    # # plt.show()
-    # print("save png to ", os.path.join(saveFolder, title))
-    # plt.savefig(os.path.join(saveFolder, title))
-    exit()
-    folder = "./accLoss"
-    for kth in range(3):
-        trainNasTrainAccFile = os.path.join(folder, "trainNasTrainAcc_{}.npy".format(str(kth)) )
-        trainNasnValAccFile = os.path.join( folder,"trainNasValAcc_{}.npy".format(str(kth)) )
-        testAccFile = os.path.join(folder, "testAcc_{}.npy".format(str(kth)) )
-        
-        accRecord = {"train": np.load(trainNasTrainAccFile),
-            "val": np.load(trainNasnValAccFile),
-            "test": np.load(testAccFile)
-            }
-        plot_acc_curve(accRecord, "acc_"+str(kth), "./plot")
+    np.set_printoptions(precision=2)
+    accC = AccCollector("1118_2.brutL0L1", fileNameTag="_1208_2")
+    testOrVal = "test"
+    accC.addExp("1118_2.brutL0L1", color="red", dataset=testOrVal, title="1118_2.brutL0L1")
+    accC.addExp("1202_3.brutL1L2", color="green", dataset=testOrVal, title="1202_3.brutL1L2")
+    accC.addExp("1204.brutL2L3", color="blue", dataset=testOrVal, title="1204.brutL2L3")
+    # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
+    accC.savePlt(dataset=testOrVal)
+    # getLoss()
+    # accC.addExp("1027_brutL3L4", color="red", dataset="test", title="1027_brutL3L4")
+    # accC.addExp("1029_2brutL3L4", color="green", dataset="test", title="1029_2brutL3L4")
+    # accC.addExp("1103_brutL3L4", color="blue", dataset="test", title="1103_brutL3L4")
+    # accC.savePlt(dataset="test")
+    # accC.boxPlot("val")
+    # accC.boxPlot("test")
+    # accC.saveCsv("val")
+    
+    # accC.saveCsv("test")
+    
+    
