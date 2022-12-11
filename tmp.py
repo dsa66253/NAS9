@@ -164,11 +164,34 @@ class AccDrawer():
         ax.set_ylabel('acc')
         ax.set_title(format(title))
         ax.legend()
+class testParent():
+    def __init__(self) -> None:
+        self.y=8
     
+class test(testParent):
+    def __init__(self):
+        testParent.__init__(self)
+        a = 0
+    def foo(self):
+        print(self.y)
+class Mother(object):
+    def __init__(self):
+        self._haircolor = "Brown"
+
+class Child(Mother):
+    def __init__(self): 
+        Mother.__init__(self)   
+    def print_haircolor(self):
+        print (self._haircolor)
 
 if __name__=="__main__":
     # plot_combined_acc(trainType="Nas")
-    expList = ["1201.brutL0L1", "1202_3.brutL1L2", "1204.brutL2L3", "1129_2.brutL1L2", "1128.brutL1L2", "1126_3.brutL0L1", "1125_2.brutL2L3"]
+    # c = Child()
+    # c.print_haircolor()
+    # t = test()
+    # t.foo()
+    exit()
+    expList = ["1202_3.brutL1L2", "1204.brutL2L3", "1206.brutL3L4"]
     for expName in expList:
         for i in range(5):
             for j in range(5):
