@@ -1,4 +1,4 @@
-datasetRoot = "../dataset13"
+datasetRoot = "../dataset23"
 trainDataSetFolder = datasetRoot+"/train"
 testDataSetFolder = datasetRoot+"/test"
 PRIMITIVES = [
