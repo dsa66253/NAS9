@@ -279,7 +279,7 @@ if __name__ == '__main__':
         #info training process 
         trainData, valData = prepareDataSet()
         trainDataLoader, valDataLoader = prepareDataLoader(trainData, valData)
-
+    
         
         criterion = prepareLossFunction()
         net = prepareModel(k)

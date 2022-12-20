@@ -132,7 +132,7 @@ class AccCollector():
                     testIndex = np.argmax(testAcc)
                     valAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_val_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(k)) )
                     valIndex = np.argmax(valAcc)
-                    firstNegMaIndex = self.getFirstNegMaIndex(valAcc, startEpoch=10)
+                    firstNegMaIndex = self.getFirstNegMaIndex(valAcc, startEpoch=20)
                     # print(firstNegMaIndex)
                     # print(valAcc[:firstNegMaIndex])
                     # print(testAcc[:firstNegMaIndex])
@@ -202,20 +202,20 @@ class AccCollector():
         return ma
 def getLoss():
     expList = ["1027_brutL3L4", "1028_2brutL3L4", "1029_2brutL3L4", "1029_brutL3L4", "1103_brutL3L4", "1111_2brutL0L1"]
-    expList = ["1117_2.brutL0L1"]
+    expList = ["1122_2.brutL0L1"]
     for exp in expList:
         print(exp)
         accC = AccCollector(exp, fileNameTag="")
         accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
     np.set_printoptions(precision=2)
-    accC = AccCollector("1118_2.brutL0L1", fileNameTag="_1208_3")
+    accC = AccCollector("1122_2.brutL0L1", fileNameTag="")
     testOrVal = "test"
-    accC.addExp("1118_2.brutL0L1", color="red", dataset=testOrVal, title="1118_2.brutL0L1")
-    accC.addExp("1202_3.brutL1L2", color="green", dataset=testOrVal, title="1202_3.brutL1L2")
-    accC.addExp("1206.brutL3L4", color="blue", dataset=testOrVal, title="1206.brutL3L4")
+    accC.addExp("1122_2.brutL0L1", color="red", dataset=testOrVal, title="1122_2.brutL0L1")
+    # accC.addExp("1122.brutL0L1", color="green", dataset=testOrVal, title="1122.brutL0L1")
+    # accC.addExp("1125.brutL0L1", color="blue", dataset=testOrVal, title="1125.brutL0L1")
     # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
-    # accC.savePlt(dataset=testOrVal)
+    accC.savePlt(dataset=testOrVal)
     # getLoss()
     # accC.addExp("1027_brutL3L4", color="red", dataset="test", title="1027_brutL3L4")
     # accC.addExp("1029_2brutL3L4", color="green", dataset="test", title="1029_2brutL3L4")
