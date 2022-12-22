@@ -48,7 +48,7 @@ class AccCollector():
 
     
     def savePlt(self, dataset):
-        saveName = os.path.join("./log", self.baseDir, "box_"+dataset+self.fileNameTag)
+        saveName = os.path.join("./log", self.baseDir, "box_"+dataset+self.fileNameTag+".png")
         print("save to ", saveName)
         plt.savefig(saveName)
         plt.close()
@@ -209,18 +209,18 @@ def getLoss():
         accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
     np.set_printoptions(precision=2)
-    accC = AccCollector("1122_2.brutL0L1", fileNameTag="")
+    accC = AccCollector("1129_2.brutL1L2", fileNameTag="_1222_9")
     testOrVal = "test"
-    accC.addExp("1122_2.brutL0L1", color="red", dataset=testOrVal, title="1122_2.brutL0L1")
-    # accC.addExp("1122.brutL0L1", color="green", dataset=testOrVal, title="1122.brutL0L1")
-    # accC.addExp("1125.brutL0L1", color="blue", dataset=testOrVal, title="1125.brutL0L1")
+    accC.addExp("1129_2.brutL1L2", color="red", dataset=testOrVal, title="1129_2.brutL1L2")
+    accC.addExp("1204.brutL2L3", color="green", dataset=testOrVal, title="1204.brutL2L3")
+    accC.addExp("1216.brutL2L3", color="blue", dataset=testOrVal, title="1216.brutL2L3")
     # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
     accC.savePlt(dataset=testOrVal)
     # getLoss()
     # accC.addExp("1027_brutL3L4", color="red", dataset="test", title="1027_brutL3L4")
     # accC.addExp("1029_2brutL3L4", color="green", dataset="test", title="1029_2brutL3L4")
     # accC.addExp("1103_brutL3L4", color="blue", dataset="test", title="1103_brutL3L4")
-    accC.savePlt(dataset="test")
+    # accC.savePlt(dataset="test")
     # accC.boxPlot("val")
     # accC.boxPlot("test")
     # accC.saveCsv("val")

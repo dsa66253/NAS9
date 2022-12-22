@@ -210,6 +210,16 @@ if __name__=="__main__":
     # c.print_haircolor()
     # t = test()
     # t.foo()
+    path="/home/marry/code/NAS9/log/1029_brutL3L4"
+    for filename in os.listdir(path):
+        # print(filename)
+        splitName = filename.split("_b")
+        if len(splitName)==2:
+            newName = splitName[0]+".b"+splitName[1]
+            print(filename, splitName, newName)
+            os.rename(path+"/"+filename, path+"/"+newName)
+		# my_source =path + filename
+		# my_dest =path + my_dest
     exit()
     expList = ["1202_3.brutL1L2", "1204.brutL2L3", "1206.brutL3L4"]
     for expName in expList:
@@ -243,31 +253,6 @@ if __name__=="__main__":
     # print("save png to ", os.path.join(saveFolder, title))
     # plt.savefig(os.path.join(saveFolder, title))
     exit()
-    folder = "./accLoss"
-    for kth in range(3):
-        trainNasTrainAccFile = os.path.join(folder, "trainNasTrainAcc_{}.npy".format(str(kth)) )
-        trainNasnValAccFile = os.path.join( folder,"trainNasValAcc_{}.npy".format(str(kth)) )
-        testAccFile = os.path.join(folder, "testAcc_{}.npy".format(str(kth)) )
-        
-        #info calculate deravitive by dy=0
-        for i in range(1, len(ma)):
-            dx = ma[i]-ma[i-1]
-            dy = 1
-            derivativeMa.append(dx/dy)
-        # print(ma)
-        # print(derivativeMa)
-        # exit()
-        #info find index by condition
-        firstNegMaIndex=0
-        for i in range(len(derivativeMa)):
-            if derivativeMa[i]<0 and i>startEpoch:
-                firstNegMaIndex=i
-                break
-        if firstNegMaIndex==0:
-            firstNegMaIndex=startEpoch
-        # print(derivativeMa[firstNegMaIndex-1:firstNegMaIndex+2])
-        # exit()
-        return firstNegMaIndex
     # def boxPlotCsv(self):
     #     self.a = []
     #     for i in range(5):
@@ -295,29 +280,7 @@ if __name__=="__main__":
             ma[i] = np.mean(window)
             # print(i, window, ma[i])
         return ma
-def getLoss():
-    expList = ["1027_brutL3L4", "1028_2brutL3L4", "1029_2brutL3L4", "1029_brutL3L4", "1103_brutL3L4", "1111_2brutL0L1"]
-    expList = ["1122_2.brutL0L1"]
-    for exp in expList:
-        print(exp)
-        accC = AccCollector(exp, fileNameTag="")
-        accC.calDiffValTest("test", expName=exp)
-if __name__=="__main__":
-    np.set_printoptions(precision=2)
-    accC = AccCollector("1118_2.brutL0L1", fileNameTag="_1208_2")
-    testOrVal = "test"
-    accC.addExp("1118_2.brutL0L1", color="red", dataset=testOrVal, title="1118_2.brutL0L1")
-    accC.addExp("1202_3.brutL1L2", color="green", dataset=testOrVal, title="1202_3.brutL1L2")
-    accC.addExp("1204.brutL2L3", color="blue", dataset=testOrVal, title="1204.brutL2L3")
-    # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
-    accC.savePlt(dataset=testOrVal)
-    # getLoss()
-    # accC.addExp("1027_brutL3L4", color="red", dataset="test", title="1027_brutL3L4")
-    # accC.addExp("1029_2brutL3L4", color="green", dataset="test", title="1029_2brutL3L4")
-    # accC.addExp("1103_brutL3L4", color="blue", dataset="test", title="1103_brutL3L4")
-    # accC.savePlt(dataset="test")
-    # accC.boxPlot("val")
-    # accC.boxPlot("test")
+
     # accC.saveCsv("val")
     
     # accC.saveCsv("test")

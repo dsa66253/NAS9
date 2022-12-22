@@ -1,5 +1,5 @@
 # config.py
-datasetRoot = "../dataset123"
+datasetRoot = "../dataset12"
 trainDataSetFolder = datasetRoot+"/train"
 testDataSetFolder = datasetRoot+"/test"
 PRIMITIVES = [
