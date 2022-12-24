@@ -210,27 +210,38 @@ if __name__=="__main__":
     # c.print_haircolor()
     # t = test()
     # t.foo()
-    path="/home/marry/code/NAS9/log/1029_brutL3L4"
+    targetFileName = os.listdir("/home/marry/code/dataset123/train")
+    path="/home/marry/code/dataset23/test"
+    i=0
     for filename in os.listdir(path):
         # print(filename)
-        splitName = filename.split("_b")
-        if len(splitName)==2:
-            newName = splitName[0]+".b"+splitName[1]
-            print(filename, splitName, newName)
-            os.rename(path+"/"+filename, path+"/"+newName)
-		# my_source =path + filename
-		# my_dest =path + my_dest
+        for target in targetFileName:
+            if filename in target:
+                newName = target
+                os.rename(path+"/"+filename, path+"/"+newName)
+                print(filename, newName)
     exit()
-    expList = ["1202_3.brutL1L2", "1204.brutL2L3", "1206.brutL3L4"]
-    for expName in expList:
-        for i in range(5):
-            for j in range(5):
-                # expName="1201.brutL0L1"
-                baseDir=os.path.join("./log", expName, "{}.{}_{}".format(expName, str(i), str(j)))
-                accD = AccDrawer(expName=expName, baseDir=baseDir)
-                sourceFolder = os.path.join(baseDir, "accLoss")
-                saveFolder = os.path.join(baseDir, "plot")
-                accD.plot_combined_acc(sourceFolder=sourceFolder, saveFolder=saveFolder, trainType="retrain")
+    # path="/home/marry/code/NAS9/log/1029_brutL3L4"
+    # for filename in os.listdir(path):
+    #     # print(filename)
+    #     splitName = filename.split("_b")
+    #     if len(splitName)==2:
+    #         newName = splitName[0]+".b"+splitName[1]
+    #         print(filename, splitName, newName)
+    #         os.rename(path+"/"+filename, path+"/"+newName)
+	# 	# my_source =path + filename
+	# 	# my_dest =path + my_dest
+    # exit()
+    # expList = ["1202_3.brutL1L2", "1204.brutL2L3", "1206.brutL3L4"]
+    # for expName in expList:
+    #     for i in range(5):
+    #         for j in range(5):
+    #             # expName="1201.brutL0L1"
+    #             baseDir=os.path.join("./log", expName, "{}.{}_{}".format(expName, str(i), str(j)))
+    #             accD = AccDrawer(expName=expName, baseDir=baseDir)
+    #             sourceFolder = os.path.join(baseDir, "accLoss")
+    #             saveFolder = os.path.join(baseDir, "plot")
+    #             accD.plot_combined_acc(sourceFolder=sourceFolder, saveFolder=saveFolder, trainType="retrain")
         
     # net = "alexnet"
     # folder = "./accLoss" 

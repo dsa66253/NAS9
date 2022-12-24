@@ -105,6 +105,36 @@ def prepareModel(kth):
     initialize_weights(net, seed_weight)
     # tmpF(net)
     return net
+def preparedTransferModel(kth):
+    #info load decode json
+    filePath = os.path.join(folder["decode"], "{}th_decode.json".format(kth))
+    f = open(filePath)
+    archDict = json.load(f)
+        
+    #info prepare model
+    print("Preparing model...")
+    set_seed_cpu(seed_weight)
+    net = NewNasModel(cellArch=archDict)
+    net.train()
+    net = net.to(device)
+    print("net.cellArch:", net.cellArch)
+    print("net", net)
+    initialize_weights(net, seed_weight)
+
+    #info prepare pretrain weight
+    f = open("./curExperiment.json")
+    exp = json.load(f)
+    f.close()
+    for key in exp:
+        expName = key
+    
+    modelLoadPath = os.path.join("./log/1223.brutL0L1", expName, folder["retrainSavedModel"], "NewNasModel{}_Final.pt".format(kth) )
+    print("modelLoadPath", modelLoadPath)
+    tmpModelWeight = torch.load( modelLoadPath )
+    net.load_state_dict(tmpModelWeight)
+    # exit()
+    # tmpF(net)
+    return net
 def prepareOpt(net):
     return optim.SGD(net.getWeight(), lr=initial_lr, momentum=momentum,
                     weight_decay=weight_decay)  # 是否采取 weight_decay
@@ -283,6 +313,7 @@ if __name__ == '__main__':
         
         criterion = prepareLossFunction()
         net = prepareModel(k)
+        # net = preparedTransferModel(k)
         histDrawer = HistDrawer(folder["pltSavedDir"])
         histDrawer.drawNetConvWeight(net, tag="ori_{}".format(str(k)))
         model_optimizer = prepareOpt(net)
