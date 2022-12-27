@@ -125,8 +125,9 @@ def preparedTransferModel(kth):
     f = open("./curExperiment.json")
     exp = json.load(f)
     f.close()
+    targetExpName = "1223.brutL0L1"
     for key in exp:
-        expName = key
+        expName = targetExpName+"."+key.split(".")[2]
     
     modelLoadPath = os.path.join("./log/1223.brutL0L1", expName, folder["retrainSavedModel"], "NewNasModel{}_Final.pt".format(kth) )
     print("modelLoadPath", modelLoadPath)
@@ -312,8 +313,8 @@ if __name__ == '__main__':
     
         
         criterion = prepareLossFunction()
-        net = prepareModel(k)
-        # net = preparedTransferModel(k)
+        # net = prepareModel(k)
+        net = preparedTransferModel(k)
         histDrawer = HistDrawer(folder["pltSavedDir"])
         histDrawer.drawNetConvWeight(net, tag="ori_{}".format(str(k)))
         model_optimizer = prepareOpt(net)
