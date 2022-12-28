@@ -210,6 +210,17 @@ if __name__=="__main__":
     # c.print_haircolor()
     # t = test()
     # t.foo()
+    targetFileName = os.listdir("/home/mary/code/dataset123/train")
+    path="/home/mary/code/dataset3/train"
+    i=0
+    for filename in os.listdir(path):
+        # print(filename)
+        for target in targetFileName:
+            if filename in target:
+                newName = target
+                os.rename(path+"/"+filename, path+"/"+newName)
+                print(filename, newName)
+    exit()
     exit()
     expList = ["1202_3.brutL1L2", "1204.brutL2L3", "1206.brutL3L4"]
     for expName in expList:
@@ -267,7 +278,7 @@ if __name__=="__main__":
             firstNegMaIndex=startEpoch
         # print(derivativeMa[firstNegMaIndex-1:firstNegMaIndex+2])
         # exit()
-        return firstNegMaIndex
+        # return firstNegMaIndex
     # def boxPlotCsv(self):
     #     self.a = []
     #     for i in range(5):
