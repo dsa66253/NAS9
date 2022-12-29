@@ -26,9 +26,10 @@ class AccCollector():
                     #* get last epoch acc
                     loadPath = "./log/{}/{}.{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), dataset, str(k)) 
                     # print(loadPath)
-                    # acc = round(np.load(loadPath)[-1], 2)
+                    # print(np.load(loadPath))
+                    acc = round(np.load(loadPath)[-1], 2)
                     #* get test acc by correspoding max val acc
-                    acc = self.__getAccByMaxVal(i, j, k, baseDir)
+                    # acc = self.__getAccByMaxVal(i, j, k, baseDir)
                     data.append(acc)
                     # self.a.append([expAcc, k , acc])
                 a.append(data)
