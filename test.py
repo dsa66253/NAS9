@@ -273,6 +273,7 @@ class TestController:
         self.curToOriIndex = self.makeTrainformIndex()
         print("self.curToOriIndex", self.curToOriIndex)
         print("tatal number of test images: ", len(self.testSetHandler.getTestDataset()))
+        print("testDataSetFolder", testDataSetFolder)
         self.testDataLoader = self.prepareDataLoader(self.testSetHandler.getTestDataset())
         self.oriTestDataLoader = self.prepareDataLoader(self.oriTestSetHandler.getTestDataset())
         self.num_classes = cfg["numOfClasses"]

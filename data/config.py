@@ -1,5 +1,5 @@
 # config.py
-datasetRoot = "../dataset"
+datasetRoot = "../dataset2"
 trainDataSetFolder = datasetRoot+"/train"
 testDataSetFolder = datasetRoot+"/test"
 PRIMITIVES = [
@@ -138,7 +138,7 @@ folder = {
     # "tensorboard_retrain_pdarts" :"./tensorboard_retrain_pdarts",
     "alpha_pdart_nodrop": "./alpha_pdart_nodrop",
     # "weights_retrain_pdarts": "./weights_retrain_pdarts",
-    "retrainSavedModel": "./retrainSavedModel",
+    "retrainSavedModel": "retrainSavedModel",
     "pltSavedDir": "./plot",
     "accLossDir": "./accLoss",
     "log": "./log",
