@@ -1,5 +1,5 @@
 # config.py
-datasetRoot = "../dataset23"
+datasetRoot = "../dataset12"
 trainDataSetFolder = datasetRoot+"/train"
 testDataSetFolder = datasetRoot+"/test"
 PRIMITIVES = [
@@ -121,7 +121,7 @@ cfg_newnasmodel = {
     'pretrain': False,
     'in_channel': 8,
     'out_channel': 64,
-    "numOfClasses": 30,
+    "numOfClasses": 20,
     "numOfLayers": len(trainMatrix),
     "numOfInnerCell": len(trainMatrix[0]),
     "numOfOperations": len(PRIMITIVES),
@@ -138,7 +138,7 @@ folder = {
     # "tensorboard_retrain_pdarts" :"./tensorboard_retrain_pdarts",
     "alpha_pdart_nodrop": "./alpha_pdart_nodrop",
     # "weights_retrain_pdarts": "./weights_retrain_pdarts",
-    "retrainSavedModel": "retrainSavedModel",
+    "retrainSavedModel": "./retrainSavedModel",
     "pltSavedDir": "./plot",
     "accLossDir": "./accLoss",
     "log": "./log",
