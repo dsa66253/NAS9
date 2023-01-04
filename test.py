@@ -301,8 +301,8 @@ class TestController:
             transPredict[i] = self.curToOriIndex[labels[i].item()]
         return transPredict
     def test(self, net, showOutput=False):
-        print("self.testSet.getClassToIndex()", self.testSetHandler.getClassToIndex())
-        print("self.oriTestSet.getClassToIndex()", self.oriTestSetHandler.getClassToIndex())
+        # print("self.testSet.getClassToIndex()", self.testSetHandler.getClassToIndex())
+        # print("self.oriTestSet.getClassToIndex()", self.oriTestSetHandler.getClassToIndex())
         
         confusion_matrix_torch = torch.zeros(self.num_classes, self.num_classes)
         net.eval()
@@ -318,12 +318,12 @@ class TestController:
                 _, predict = torch.max(outputs.data, 1)
                 total += labels.size(0)
                 # total = total + 1
-                print("predict", predict.shape, predict)
-                print("labels", labels.shape, labels)
-                labels = self.transformIndex(labels)
-                print("labels", labels.shape, labels)
+                # print("predict", predict.shape, predict)
+                # print("labels", labels.shape, labels)
+                # labels = self.transformIndex(labels)
+                # print("labels", labels.shape, labels)
                 correct += (predict == labels).sum().item()
-                print("=================================")
+                # print("=================================")
                 # for t, p in zip(labels.view(-1), predict.view(-1)):
                 #     confusion_matrix_torch[t.long(), p.long()] += 1
                 # print("outputs ", outputs)
@@ -394,8 +394,8 @@ if __name__ == '__main__':
         # saveAccLoss(kth, accRecord)
         
         #info test final model
-        # net = prepareModel(num_classes, kth)
-        net = preparedTransferModel(kth)
+        net = prepareModel(num_classes, kth)
+        # net = preparedTransferModel(kth)
         
         last_epoch_val_acc = testC.test(net)
         saveAcc([last_epoch_val_acc])

@@ -313,8 +313,8 @@ if __name__ == '__main__':
     
         
         criterion = prepareLossFunction()
-        # net = prepareModel(k)
-        net = preparedTransferModel(k)
+        net = prepareModel(k)
+        # net = preparedTransferModel(k)
         histDrawer = HistDrawer(folder["pltSavedDir"])
         histDrawer.drawNetConvWeight(net, tag="ori_{}".format(str(k)))
         model_optimizer = prepareOpt(net)
