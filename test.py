@@ -22,7 +22,8 @@ from utility.DatasetHandler import DatasetHandler
 
 stdoutTofile = True
 accelerateButUndetermine = True
-
+targetExpName = "1230_2.brutL0L1"
+targetTestSet = "../dataset13/test"
 def parse_args(i):
     parser = argparse.ArgumentParser(description='imagenet nas Training')
     parser.add_argument('-m', '--trained_model',
@@ -160,7 +161,7 @@ def preparedTransferModel(kth):
     f = open("./curExperiment.json")
     exp = json.load(f)
     f.close()
-    targetExpName = "1218.brutL0L1"
+    # targetExpName = "1218.brutL0L1"
     for key in exp:
         expName = targetExpName+"."+key.split(".")[2]
     
@@ -269,7 +270,7 @@ class TestController:
     def __init__(self, cfg, device, seed=20, testDataSetFolder=testDataSetFolder):
         self.cfg = cfg
         self.testSetHandler = self.prepareData(seed, testDataSetFolder)
-        self.oriTestSetHandler = self.prepareData(seed, "../dataset123/test")
+        self.oriTestSetHandler = self.prepareData(seed, targetTestSet)
         self.curToOriIndex = self.makeTrainformIndex()
         print("self.curToOriIndex", self.curToOriIndex)
         print("tatal number of test images: ", len(self.testSetHandler.getTestDataset()))
@@ -301,8 +302,8 @@ class TestController:
             transPredict[i] = self.curToOriIndex[labels[i].item()]
         return transPredict
     def test(self, net, showOutput=False):
-        # print("self.testSet.getClassToIndex()", self.testSetHandler.getClassToIndex())
-        # print("self.oriTestSet.getClassToIndex()", self.oriTestSetHandler.getClassToIndex())
+        print("self.testSet.getClassToIndex()", self.testSetHandler.getClassToIndex())
+        print("self.oriTestSet.getClassToIndex()", self.oriTestSetHandler.getClassToIndex())
         
         confusion_matrix_torch = torch.zeros(self.num_classes, self.num_classes)
         net.eval()
@@ -320,7 +321,8 @@ class TestController:
                 # total = total + 1
                 # print("predict", predict.shape, predict)
                 # print("labels", labels.shape, labels)
-                # labels = self.transformIndex(labels)
+                # info transform testset index to targetExp 
+                labels = self.transformIndex(labels)
                 # print("labels", labels.shape, labels)
                 correct += (predict == labels).sum().item()
                 # print("=================================")
@@ -394,8 +396,8 @@ if __name__ == '__main__':
         # saveAccLoss(kth, accRecord)
         
         #info test final model
-        net = prepareModel(num_classes, kth)
-        # net = preparedTransferModel(kth)
+        # net = prepareModel(num_classes, kth)
+        net = preparedTransferModel(kth)
         
         last_epoch_val_acc = testC.test(net)
         saveAcc([last_epoch_val_acc])
