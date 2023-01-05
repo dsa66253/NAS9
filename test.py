@@ -22,8 +22,8 @@ from utility.DatasetHandler import DatasetHandler
 
 stdoutTofile = True
 accelerateButUndetermine = True
-targetExpName = "1230.brutL0L1"
-targetTestSet = "../dataset12/test"
+targetExpName = "1218.brutL0L1"
+targetTestSet = "../dataset123/test"
 def parse_args(i):
     parser = argparse.ArgumentParser(description='imagenet nas Training')
     parser.add_argument('-m', '--trained_model',
