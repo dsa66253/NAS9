@@ -22,8 +22,8 @@ from utility.DatasetHandler import DatasetHandler
 
 stdoutTofile = True
 accelerateButUndetermine = True
-targetExpName = "1230_2.brutL0L1"
-targetTestSet = "../dataset13/test"
+targetExpName = "1230.brutL0L1"
+targetTestSet = "../dataset12/test"
 def parse_args(i):
     parser = argparse.ArgumentParser(description='imagenet nas Training')
     parser.add_argument('-m', '--trained_model',
@@ -321,7 +321,7 @@ class TestController:
                 # total = total + 1
                 # print("predict", predict.shape, predict)
                 # print("labels", labels.shape, labels)
-                # info transform testset index to targetExp 
+                # info transform testset index to targetExp index
                 labels = self.transformIndex(labels)
                 # print("labels", labels.shape, labels)
                 correct += (predict == labels).sum().item()
