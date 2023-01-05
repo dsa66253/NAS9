@@ -1,5 +1,5 @@
 # config.py
-datasetRoot = "../dataset3"
+datasetRoot = "../dataset"
 trainDataSetFolder = datasetRoot+"/train"
 testDataSetFolder = datasetRoot+"/test"
 PRIMITIVES = [
@@ -121,7 +121,7 @@ cfg_newnasmodel = {
     'pretrain': False,
     'in_channel': 8,
     'out_channel': 64,
-    "numOfClasses": 30,
+    "numOfClasses": 20,
     "numOfLayers": len(trainMatrix),
     "numOfInnerCell": len(trainMatrix[0]),
     "numOfOperations": len(PRIMITIVES),
