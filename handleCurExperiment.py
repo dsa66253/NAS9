@@ -56,16 +56,21 @@ def openCurExp():
 if __name__=="__main__":
     curExpName = openCurExp()
     desDir = join("./log", curExpName)
-    # copy log
+    # move model weight
+    # fileNameList = getAllFileName("./retrainSavedModel")
+    # desDir2 =  join(desDir, "retrainSavedModel")
+    # makeDir(desDir2)
+    # moveFile(fileNameList, "./retrainSavedModel", desDir2)
+    # move log
     fileNameList = getAllFileName("./log")
     desDir2 =  join(desDir, "log")
     makeDir(desDir2)
     moveFile(fileNameList, "./log", desDir2)
     # copy alpha
-    fileNameList = getAllFileName("./alpha_pdart_nodrop")
-    desDir2 =  join(desDir, "alpha_pdart_nodrop")
-    makeDir(desDir2)
-    copyFile(fileNameList, "./alpha_pdart_nodrop", desDir2)
+    # fileNameList = getAllFileName("./alpha_pdart_nodrop")
+    # desDir2 =  join(desDir, "alpha_pdart_nodrop")
+    # makeDir(desDir2)
+    # copyFile(fileNameList, "./alpha_pdart_nodrop", desDir2)
     # copy plot
     fileNameList = getAllFileName("./plot")
     desDir2 =  join(desDir, "plot")
