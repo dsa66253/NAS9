@@ -1,30 +1,21 @@
-import math
 import os
-import sys
 import torch
 import torch.optim as optim
 from test import TestController
 # import torch.backends.cudnn as cudnn
 import argparse
 from torch import nn
-from torchvision import transforms, datasets
 from data.config import cfg_newnasmodel, trainDataSetFolder, seed
-from tensorboardX import SummaryWriter
 import numpy as np
 from data.config import folder
 from feature.make_dir import makeDir
 from feature.random_seed import set_seed_cpu
-from PIL import ImageFile
 from tqdm import tqdm
 from models.retrainModel import NewNasModel
-from alexnet.alexnet import Baseline
 from utility.AccLossMonitor import AccLossMonitor
 from feature.utility import setStdoutToFile, setStdoutToDefault
 from feature.utility import getCurrentTime, accelerateByGpuAlgo, get_device
-import matplotlib.pyplot as plt
 from utility.DatasetHandler import DatasetHandler
-from torchvision import transforms
-from  utility.DatasetReviewer import DatasetReviewer
 import json 
 from utility.HistDrawer import HistDrawer
 from models.initWeight import initialize_weights
@@ -38,18 +29,11 @@ def printNetGrad(net):
         break
 def parse_args(k=0):
     parser = argparse.ArgumentParser(description='imagenet nas Training')
-    parser.add_argument('--network', default='newnasmodel', help='Backbone network mobile0.25 or resnet50')
     parser.add_argument('--num_workers', default=4, type=int, help='Number of workers used in dataloading')
     parser.add_argument('--lr', '--learning-rate', default=1e-3, type=float, help='initial learning rate')
     parser.add_argument('--momentum', default=0.9, type=float, help='momentum')
-    parser.add_argument('--resume_net', default=None, help='resume net for retraining')
-    parser.add_argument('--resume_epoch', default=0, type=int, help='resume iter for retraining')
     parser.add_argument('--weight_decay', default=5e-4, type=float, help='Weight decay for SGD')
     parser.add_argument('--gamma', default=0.1, type=float, help='Gamma update for SGD')
-    # parser.add_argument('--genotype_file', type=str, default='genotype_' + str(k) + '.npy',
-    #                     help='put decode file')
-    parser.add_argument('--pltSavedDir', type=str, default='./plot',
-                        help='plot train loss and val loss')
     args = parser.parse_args()
     return args
 
