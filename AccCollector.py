@@ -16,23 +16,24 @@ class AccCollector():
         self.title = self.title +"."+ title + color
         a = []
         labels = []
-        for i in range(5):
-            for j in range(5):
-                expAcc = "{}.{}_{}".format(baseDir, i, j )
-                labels.append(expAcc)
-                data = []
-                for k in range(10):
-                    # base = os.walk(baseDir)
-                    #* get last epoch acc
-                    loadPath = "./log/{}/{}.{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), dataset, str(k)) 
-                    # print(loadPath)
-                    # print(np.load(loadPath))
-                    acc = round(np.load(loadPath)[-1], 2)
-                    #* get test acc by correspoding max val acc
-                    # acc = self.__getAccByMaxVal(i, j, k, baseDir)
-                    data.append(acc)
-                    # self.a.append([expAcc, k , acc])
-                a.append(data)
+        for i in range(3):
+            for j in range(3):
+                for l in range(3):
+                    expAcc = "{}.{}_{}_{}".format(baseDir, i, j, l)
+                    labels.append(expAcc)
+                    data = []
+                    for k in range(10):
+                        # base = os.walk(baseDir)
+                        #* get last epoch acc
+                        loadPath = "./log/{}/{}.{}_{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), str(l), dataset, str(k)) 
+                        # print(loadPath)
+                        # print(np.load(loadPath))
+                        acc = round(np.load(loadPath)[-1], 2)
+                        #* get test acc by correspoding max val acc
+                        # acc = self.__getAccByMaxVal(i, j, k, baseDir)
+                        data.append(acc)
+                        # self.a.append([expAcc, k , acc])
+                    a.append(data)
         if hasattr(self, "axs"):
             pass
         else:
@@ -125,29 +126,30 @@ class AccCollector():
         loss = 0
         for i in range(5):
             for j in range(5):
-                expAcc = "{}.{}_{}".format(self.baseDir, i, j )
-                tmp = [expAcc]
+                for l in range(5):
+                    expAcc = "{}.{}_{}_{}".format(self.baseDir, i, j, l)
+                    tmp = [expAcc]
 
-                for k in range(10):
-                    testAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_test_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(k)) )
-                    testIndex = np.argmax(testAcc)
-                    valAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_val_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(k)) )
-                    valIndex = np.argmax(valAcc)
-                    firstNegMaIndex = self.getFirstNegMaIndex(valAcc, startEpoch=20)
-                    # print(firstNegMaIndex)
-                    # print(valAcc[:firstNegMaIndex])
-                    # print(testAcc[:firstNegMaIndex])
-                    valIndex = np.argmax(valAcc[:firstNegMaIndex])
-                    
-                    # if testIndex<20:
-                    #     print(expName, i, j, k)
-                    #     print("index", testIndex, valIndex, "acc", testAcc[testIndex], testAcc[valIndex])
-                    toHistList.append(testIndex)
-                    total = total + 1
-                    if testIndex==valIndex:
-                        hit = hit + 1
-                    else:
-                        loss = loss + (abs(testAcc[testIndex] - testAcc[valIndex]))
+                    for k in range(10):
+                        testAcc = np.load("./log/{}/{}.{}_{}_{}/accLoss/retrain_test_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(l), str(k)) )
+                        testIndex = np.argmax(testAcc)
+                        valAcc = np.load("./log/{}/{}.{}_{}_{}/accLoss/retrain_val_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(l), str(k)) )
+                        valIndex = np.argmax(valAcc)
+                        firstNegMaIndex = self.getFirstNegMaIndex(valAcc, startEpoch=20)
+                        # print(firstNegMaIndex)
+                        # print(valAcc[:firstNegMaIndex])
+                        # print(testAcc[:firstNegMaIndex])
+                        valIndex = np.argmax(valAcc[:firstNegMaIndex])
+                        
+                        # if testIndex<20:
+                        #     print(expName, i, j, k)
+                        #     print("index", testIndex, valIndex, "acc", testAcc[testIndex], testAcc[valIndex])
+                        toHistList.append(testIndex)
+                        total = total + 1
+                        if testIndex==valIndex:
+                            hit = hit + 1
+                        else:
+                            loss = loss + (abs(testAcc[testIndex] - testAcc[valIndex]))
         histDrawer.drawHist(torch.tensor(toHistList, dtype=torch.float32), fileName="maxTestAcc", tag=expName)
         print(hit, total, "hit rate", hit/total)
         print("Avg loss ", loss/total)
@@ -210,11 +212,11 @@ def getLoss():
         accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
     np.set_printoptions(precision=2)
-    accC = AccCollector("1218.brutL0L1", fileNameTag="1229_7")
+    accC = AccCollector("0109.brutL0L1L2", fileNameTag="0112_1")
     testOrVal = "test"
-    accC.addExp("1218.brutL0L1", color="red", dataset=testOrVal, title="1218.brutL0L1")
-    accC.addExp("1229_2.brutL0L1", color="green", dataset=testOrVal, title="1229_2.brutL0L1")
-    accC.addExp("1229_5.brutL0L1", color="blue", dataset=testOrVal, title="1229_5.brutL0L1")
+    accC.addExp("0110.brutL0L1L2", color="red", dataset=testOrVal, title="0110.brutL0L1L2")
+    # accC.addExp("0109.brutL0L1L2", color="green", dataset=testOrVal, title="0109.brutL0L1L2")
+    # accC.addExp("1229_5.brutL0L1", color="blue", dataset=testOrVal, title="1229_5.brutL0L1")
     # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
     accC.savePlt(dataset=testOrVal)
     # getLoss()

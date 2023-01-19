@@ -269,13 +269,13 @@ class TestController:
     def __init__(self, cfg, device, seed=20, testDataSetFolder=testDataSetFolder):
         self.cfg = cfg
         self.testSetHandler = self.prepareData(seed, testDataSetFolder)
-        self.oriTestSetHandler = self.prepareData(seed, "../dataset123/test")
-        self.curToOriIndex = self.makeTrainformIndex()
-        print("self.curToOriIndex", self.curToOriIndex)
-        print("tatal number of test images: ", len(self.testSetHandler.getTestDataset()))
+        # self.oriTestSetHandler = self.prepareData(seed, "../dataset123/test")
+        # self.curToOriIndex = self.makeTrainformIndex()
+        # print("self.curToOriIndex", self.curToOriIndex)
+        # print("tatal number of test images: ", len(self.testSetHandler.getTestDataset()))
         print("testDataSetFolder", testDataSetFolder)
         self.testDataLoader = self.prepareDataLoader(self.testSetHandler.getTestDataset())
-        self.oriTestDataLoader = self.prepareDataLoader(self.oriTestSetHandler.getTestDataset())
+        # self.oriTestDataLoader = self.prepareDataLoader(self.oriTestSetHandler.getTestDataset())
         self.num_classes = cfg["numOfClasses"]
         self.device = device
     def printAllModule(self, net):
@@ -319,8 +319,8 @@ class TestController:
                 total += labels.size(0)
                 # total = total + 1
                 # print("predict", predict.shape, predict)
-                # print("labels", labels.shape, labels)
-                labels = self.transformIndex(labels)
+                # print("labels", labels.cccccshape, labels)
+                # labels = self.transformIndex(labels)
                 # print("labels", labels.shape, labels)
                 correct += (predict == labels).sum().item()
                 # print("=================================")
