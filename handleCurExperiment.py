@@ -57,10 +57,10 @@ if __name__=="__main__":
     curExpName = openCurExp()
     desDir = join("./log", curExpName)
     # move model weight
-    fileNameList = getAllFileName("./retrainSavedModel")
-    desDir2 =  join(desDir, "retrainSavedModel")
-    makeDir(desDir2)
-    moveFile(fileNameList, "./retrainSavedModel", desDir2)
+    # fileNameList = getAllFileName("./retrainSavedModel")
+    # desDir2 =  join(desDir, "retrainSavedModel")
+    # makeDir(desDir2)
+    # moveFile(fileNameList, "./retrainSavedModel", desDir2)
     # move log
     fileNameList = getAllFileName("./log")
     desDir2 =  join(desDir, "log")

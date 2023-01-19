@@ -210,11 +210,11 @@ def getLoss():
         accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
     np.set_printoptions(precision=2)
-    accC = AccCollector("0104_2.brutL0L1", fileNameTag="_0105_8")
+    accC = AccCollector("0104_4.brutL0L1", fileNameTag="_0105_9")
     testOrVal = "test"
-    accC.addExp("0104_2.brutL0L1", color="red", dataset=testOrVal, title="0104_2.brutL0L1")
-    accC.addExp("0104_7.brutL0L1", color="green", dataset=testOrVal, title="0104_7.brutL0L1")
-    accC.addExp("1227.brutL0L1", color="blue", dataset=testOrVal, title="1227.brutL0L1")
+    accC.addExp("0104_4.brutL0L1", color="red", dataset=testOrVal, title="0104_4.brutL0L1")
+    accC.addExp("0104_8.brutL0L1", color="green", dataset=testOrVal, title="0104_8.brutL0L1")
+    accC.addExp("1223.brutL0L1", color="blue", dataset=testOrVal, title="1223.brutL0L1")
     # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
     accC.savePlt(dataset=testOrVal)
     # getLoss()

@@ -121,7 +121,7 @@ cfg_newnasmodel = {
     'pretrain': False,
     'in_channel': 8,
     'out_channel': 64,
-    "numOfClasses": 20,
+    "numOfClasses": 10,
     "numOfLayers": len(trainMatrix),
     "numOfInnerCell": len(trainMatrix[0]),
     "numOfOperations": len(PRIMITIVES),
