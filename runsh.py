@@ -88,7 +88,7 @@ def brutNas():
                     manualAssign["layer_2_3"][k] = 1
                     manualAssign["layer_3_4"][l] = 1
                     f = setStdoutToFile("./curExperiment.json")
-                    curExpName = "0105.brutL0L1L2L3.{}_{}_{}_{}".format(i, j, k, l)
+                    curExpName = "0126.brutL0L1L2L3.{}_{}_{}_{}".format(i, j, k, l)
                     desDir = join("./log", curExpName)
                     print(json.dumps({curExpName:1}, indent=4))
                     setStdoutToDefault(f)
