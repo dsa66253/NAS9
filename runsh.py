@@ -52,27 +52,27 @@ def brutNas():
             0,
             0
         ],
-        "layer_2_3": [
+        "layer_2_5": [
             0,
             0,
             0,
             0,
             0
         ],
-        "layer_3_4": [
-            1,
-            0,
-            0,
-            0,
-            0
-        ],
-        "layer_4_5": [
-            1,
-            0,
-            0,
-            0,
-            0
-        ],
+        # "layer_3_4": [
+        #     1,
+        #     0,
+        #     0,
+        #     0,
+        #     0
+        # ],
+        # "layer_4_5": [
+        #     1,
+        #     0,
+        #     0,
+        #     0,
+        #     0
+        # ],
     }
     # brutally train all possible arch of first two layers
 
@@ -84,10 +84,10 @@ def brutNas():
                 manualAssign = copy.deepcopy(initiManualAssign)
                 manualAssign["layer_0_1"][i] = 1
                 manualAssign["layer_1_2"][j] = 1
-                manualAssign["layer_2_3"][k] = 1
+                manualAssign["layer_2_5"][k] = 1
                 # manualAssign["layer_3_4"][j] = 1
                 f = setStdoutToFile("./curExperiment.json")
-                curExpName = "0131.brutL0L1L2.{}_{}_{}".format(i, j, k)
+                curExpName = "0202_2.brutL0L1L2.{}_{}_{}".format(i, j, k)
                 desDir = join("./log", curExpName)
                 print(json.dumps({curExpName:1}, indent=4))
                 setStdoutToDefault(f)
