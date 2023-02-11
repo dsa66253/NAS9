@@ -19,22 +19,22 @@ class AccCollector():
         numOfOp = 3
         for i in range(numOfOp):
             for j in range(numOfOp):
-                for l in range(numOfOp):
-                    expAcc = "{}.{}_{}_{}".format(baseDir, i, j, l)
-                    labels.append(expAcc)
-                    data = []
-                    for k in range(10):
-                        # base = os.walk(baseDir)
-                        #* get last epoch acc
-                        loadPath = "./log/{}/{}.{}_{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), str(l), dataset, str(k)) 
-                        # print(loadPath)
-                        # print(np.load(loadPath))
-                        acc = round(np.load(loadPath)[-1], 2)
-                        #* get test acc by correspoding max val acc
-                        # acc = self.__getAccByMaxVal(i, j, k, baseDir)
-                        data.append(acc)
-                        # self.a.append([expAcc, k , acc])
-                    a.append(data)
+                # for l in range(numOfOp):
+                expAcc = "{}.{}_{}".format(baseDir, i, j)
+                labels.append(expAcc)
+                data = []
+                for k in range(10):
+                    # base = os.walk(baseDir)
+                    #* get last epoch acc
+                    loadPath = "./log/{}/{}.{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), dataset, str(k)) 
+                    # print(loadPath)
+                    # print(np.load(loadPath))
+                    # acc = round(np.load(loadPath)[-1], 2)
+                    #* get test acc by correspoding max val acc
+                    acc = self.__getAccByMaxVal(i, j, k, baseDir)
+                    data.append(acc)
+                    # self.a.append([expAcc, k , acc])
+                a.append(data)
         if hasattr(self, "axs"):
             pass
         else:
@@ -212,11 +212,11 @@ def getLoss():
         accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
     np.set_printoptions(precision=2)
-    accC = AccCollector("0202_3.brutL1L2L3L4", fileNameTag="_0105_9")
+    accC = AccCollector("1201.brutL0L1", fileNameTag="_0209_6")
     testOrVal = "test"
-    accC.addExp("0202_3.brutL1L2L3L4", color="red", dataset=testOrVal, title="0202_3.brutL1L2L3L4")
-    # accC.addExp("0104_8.brutL0L1", color="green", dataset=testOrVal, title="0104_8.brutL0L1")
-    # accC.addExp("1223.brutL0L1", color="blue", dataset=testOrVal, title="1223.brutL0L1")
+    accC.addExp("1201.brutL0L1", color="red", dataset=testOrVal, title="1201.brutL0L1")
+    accC.addExp("1208.brutL1L2", color="green", dataset=testOrVal, title="1208.brutL1L2")
+    accC.addExp("1206_2.brutL2L3", color="blue", dataset=testOrVal, title="1206_2.brutL2L3")
     # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
     accC.savePlt(dataset=testOrVal)
     # getLoss()
