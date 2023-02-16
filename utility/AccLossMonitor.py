@@ -16,6 +16,7 @@ class AccLossMonitor():
             np.save(os.path.join(self.npFolder, "{}_train_acc_{}".format(self.trainType, self.kth)), accRecord["train"])
             np.save(os.path.join(self.npFolder, "{}_val_acc_{}".format(self.trainType, self.kth)), accRecord["val"])
             np.save(os.path.join(self.npFolder, "{}_test_acc_{}".format(self.trainType, self.kth)), accRecord["test"])
+            print("accRecord[test]", accRecord["test"])
         except Exception as e:
             print("Fail to save acc and loss")
             print(e)
