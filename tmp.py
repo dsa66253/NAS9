@@ -210,6 +210,8 @@ if __name__=="__main__":
     # c.print_haircolor()
     # t = test()
     # t.foo()
+    print(np.load("/home/marry/code/NAS9/log/0211.brutL3L4/0211.brutL3L4.0_0/accLoss/retrain_test_acc_0.npy"))
+    exit()
     targetFileName = os.listdir("/home/marry/code/dataset123/train")
     path="/home/marry/code/dataset23/test"
     i=0

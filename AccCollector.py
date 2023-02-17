@@ -16,7 +16,7 @@ class AccCollector():
         self.title = self.title +"."+ title + color
         a = []
         labels = []
-        numOfOp = 3
+        numOfOp = 5
         for i in range(numOfOp):
             for j in range(numOfOp):
                 # for l in range(numOfOp):
@@ -29,9 +29,9 @@ class AccCollector():
                     loadPath = "./log/{}/{}.{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), dataset, str(k)) 
                     # print(loadPath)
                     # print(np.load(loadPath))
-                    # acc = round(np.load(loadPath)[-1], 2)
+                    acc = round(np.load(loadPath)[-1], 2)
                     #* get test acc by correspoding max val acc
-                    acc = self.__getAccByMaxVal(i, j, k, baseDir)
+                    # acc = self.__getAccByMaxVal(i, j, k, baseDir)
                     data.append(acc)
                     # self.a.append([expAcc, k , acc])
                 a.append(data)
@@ -48,7 +48,11 @@ class AccCollector():
         # self.axs.set_ylim([self.ymin, self.ymax])
         self.axs.set_yticks(np.arange(self.ymin, self.ymax, 1))
         plt.xticks(rotation=90)
-
+    def getDynamicXLabel(self, numOfTotalLayer, numOfOp):
+        label = []
+        for i in range(numOfTotalLayer):
+            for j in range(numOfTotalLayer):
+                label.append("")
     
     def savePlt(self, dataset):
         saveName = os.path.join("./log", self.baseDir, "box_"+dataset+self.fileNameTag+".png")
@@ -212,12 +216,12 @@ def getLoss():
         accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
     np.set_printoptions(precision=2)
-    accC = AccCollector("1201.brutL0L1", fileNameTag="_0209_6")
+    accC = AccCollector("1126.brutL0L1", fileNameTag="_0216_2")
     testOrVal = "test"
-    accC.addExp("1201.brutL0L1", color="red", dataset=testOrVal, title="1201.brutL0L1")
-    accC.addExp("1208.brutL1L2", color="green", dataset=testOrVal, title="1208.brutL1L2")
-    accC.addExp("1206_2.brutL2L3", color="blue", dataset=testOrVal, title="1206_2.brutL2L3")
-    # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
+    accC.addExp("1126.brutL0L1", color="red", dataset=testOrVal, title="1126.brutL0L1")
+    accC.addExp("1029_2.brutL3L4", color="green", dataset=testOrVal, title="1029_2.brutL3L4")
+    accC.addExp("1125_2.brutL2L3", color="blue", dataset=testOrVal, title="1125_2.brutL2L3")
+    accC.addExp("0211.brutL3L4", color="black", dataset=testOrVal, title="0211.brutL3L4")
     accC.savePlt(dataset=testOrVal)
     # getLoss()
     # accC.addExp("1027_brutL3L4", color="red", dataset="test", title="1027_brutL3L4")
