@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from torch.autograd import Variable
 from torch.utils.data import Subset
 from torchvision import transforms, datasets
-from data.config import  cfg_alexnet, folder, seed, cfg_newnasmodel as cfg, testDataSetFolder
+from data.config import  cfg_alexnet, folder, seed, cfg_newnasmodel as cfg, testDataSetFolder, dataset1Name, dataset2Name, dataset3Name
 from models.retrainModel import NewNasModel
 # from model import Model
 from TsengCode.alexnet import Baseline
@@ -20,9 +20,11 @@ from feature.random_seed import set_seed_cpu
 import json
 from utility.DatasetHandler import DatasetHandler
 
+
 stdoutTofile = True
 accelerateButUndetermine = True
-
+targetExpName = "0101.brutL0L1"
+targetTestSet = "../dataset23/test"
 def parse_args(i):
     parser = argparse.ArgumentParser(description='imagenet nas Training')
     parser.add_argument('-m', '--trained_model',
@@ -160,7 +162,7 @@ def preparedTransferModel(kth):
     f = open("./curExperiment.json")
     exp = json.load(f)
     f.close()
-    targetExpName = "1218.brutL0L1"
+    # targetExpName = "1218.brutL0L1"
     for key in exp:
         expName = targetExpName+"."+key.split(".")[2]
     
@@ -268,9 +270,11 @@ def test(test_loader, net):
 class TestController:
     def __init__(self, cfg, device, seed=20, testDataSetFolder=testDataSetFolder):
         self.cfg = cfg
+        self.testDataSetFolder = testDataSetFolder
         self.testSetHandler = self.prepareData(seed, testDataSetFolder)
-        # self.oriTestSetHandler = self.prepareData(seed, "../dataset123/test")
+        # self.oriTestSetHandler = self.prepareData(seed, targetTestSet)
         # self.curToOriIndex = self.makeTrainformIndex()
+        self.IndexToClass = self.testSetHandler.getIndexToClass()
         # print("self.curToOriIndex", self.curToOriIndex)
         # print("tatal number of test images: ", len(self.testSetHandler.getTestDataset()))
         print("testDataSetFolder", testDataSetFolder)
@@ -278,6 +282,24 @@ class TestController:
         # self.oriTestDataLoader = self.prepareDataLoader(self.oriTestSetHandler.getTestDataset())
         self.num_classes = cfg["numOfClasses"]
         self.device = device
+        self.statics = {
+            "dataset1":{
+                "correct":0,
+                "total":0,
+                "accList":[]
+                
+            },
+            "dataset2":{
+                "correct":0,
+                "total":0,
+                "accList":[]
+            },
+            "dataset3":{
+                "correct":0,
+                "total":0,
+                "accList":[]
+            },
+        }
     def printAllModule(self, net):
         print("printAllModule()")
         for k, v in net.named_parameters():
@@ -303,8 +325,7 @@ class TestController:
     def test(self, net, showOutput=False):
         # print("self.testSet.getClassToIndex()", self.testSetHandler.getClassToIndex())
         # print("self.oriTestSet.getClassToIndex()", self.oriTestSetHandler.getClassToIndex())
-        
-        confusion_matrix_torch = torch.zeros(self.num_classes, self.num_classes)
+        self.refreshStatics()
         net.eval()
         # print(net)
         with torch.no_grad():
@@ -319,10 +340,35 @@ class TestController:
                 total += labels.size(0)
                 # total = total + 1
                 # print("predict", predict.shape, predict)
-                # print("labels", labels.cccccshape, labels)
+                # print("labels", labels.shape, labels)
+                # info transform testset index to targetExp index
                 # labels = self.transformIndex(labels)
                 # print("labels", labels.shape, labels)
-                correct += (predict == labels).sum().item()
+                checkedSheet = predict == labels
+                correct += (checkedSheet).sum().item()
+                
+                for i in range(len(labels)):
+                    className = self.IndexToClass[labels[i].item()]
+                    if className in dataset1Name:
+                        self.statics["dataset1"]["total"] = self.statics["dataset1"]["total"] + 1
+                        if checkedSheet[i]==True:
+                            self.statics["dataset1"]["correct"] = self.statics["dataset1"]["correct"] + 1
+                        
+                    elif(className in dataset2Name):
+                        self.statics["dataset2"]["total"] = self.statics["dataset2"]["total"] + 1
+                        if checkedSheet[i]==True:
+                            self.statics["dataset2"]["correct"] = self.statics["dataset2"]["correct"] + 1
+                        
+                    elif(className in dataset3Name):
+                        self.statics["dataset3"]["total"] = self.statics["dataset3"]["total"] + 1
+                        if checkedSheet[i]==True:
+                            self.statics["dataset3"]["correct"] = self.statics["dataset3"]["correct"] + 1
+            for dataset in ["dataset1", "dataset2", "dataset3"]:
+                try:
+                    self.statics[dataset]["accList"].append(self.statics[dataset]["correct"]/self.statics[dataset]["total"])
+                except:
+                    self.statics[dataset]["accList"].append(0)
+            print(self.statics)
                 # print("=================================")
                 # for t, p in zip(labels.view(-1), predict.view(-1)):
                 #     confusion_matrix_torch[t.long(), p.long()] += 1
@@ -334,15 +380,23 @@ class TestController:
 
         net.train()
         return acc * 100
+    def refreshStatics(self):
+        for datasetName in self.statics:
+            self.statics[datasetName]["correct"] = 0
+            self.statics[datasetName]["total"] = 0
+    def saveDatasetAcc(self, kth):
+        np.save(os.path.join(folder["accLossDir"], "{}_test_acc_{}_{}".format("retrain", "dataset1", str(kth))), self.statics["dataset1"]["accList"])
+        np.save(os.path.join(folder["accLossDir"], "{}_test_acc_{}_{}".format("retrain", "dataset2", str(kth))), self.statics["dataset2"]["accList"])
+        np.save(os.path.join(folder["accLossDir"], "{}_test_acc_{}_{}".format("retrain", "dataset3", str(kth))), self.statics["dataset3"]["accList"])
     def prepareData(self, seed, testDataSetFolder):
         datasetHandler = DatasetHandler(testDataSetFolder, cfg, seed)
         return datasetHandler
-
     def prepareDataLoader(self, test_data):
         test_loader = torch.utils.data.DataLoader(test_data, batch_size=self.cfg["batch_size"], num_workers=0, shuffle=False)
         return test_loader
+
 def saveAcc(saveNp):
-    np.save(os.path.join("./accLoss", "{}_test_acc_{}".format("retrain", str(kth))), saveNp)
+    np.save(os.path.join(folder["accLossDir"], "{}_test_acc_{}".format("retrain", str(kth))), saveNp)
 if __name__ == '__main__':
     # print("main fucntion")
     torch.set_printoptions(precision=6, sci_mode=False, threshold=1000)
@@ -399,6 +453,7 @@ if __name__ == '__main__':
         
         last_epoch_val_acc = testC.test(net)
         saveAcc([last_epoch_val_acc])
+
         # print("normal model", last_epoch_val_acc)
         # net = prepareAvgModel(num_classes, kth)
         # last_epoch_val_acc = testC.test(net)
