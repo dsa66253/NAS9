@@ -16,6 +16,7 @@ from utility.AccLossMonitor import AccLossMonitor
 from feature.utility import setStdoutToFile, setStdoutToDefault
 from feature.utility import getCurrentTime, accelerateByGpuAlgo, get_device
 from utility.DatasetHandler import DatasetHandler
+from  utility.DatasetReviewer import DatasetReviewer
 import json 
 from utility.HistDrawer import HistDrawer
 from models.initWeight import initialize_weights
@@ -87,6 +88,37 @@ def prepareModel(kth):
     print("net.cellArch:", net.cellArch)
     print("net", net)
     initialize_weights(net, seed_weight)
+    # tmpF(net)
+    return net
+def preparedTransferModel(kth):
+    #info load decode json
+    filePath = os.path.join(folder["decode"], "{}th_decode.json".format(kth))
+    f = open(filePath)
+    archDict = json.load(f)
+        
+    #info prepare model
+    print("Preparing model...")
+    set_seed_cpu(seed_weight)
+    net = NewNasModel(cellArch=archDict)
+    net.train()
+    net = net.to(device)
+    print("net.cellArch:", net.cellArch)
+    print("net", net)
+    initialize_weights(net, seed_weight)
+
+    #info prepare pretrain weight
+    f = open("./curExperiment.json")
+    exp = json.load(f)
+    f.close()
+    targetExpName = "1223.brutL0L1"
+    for key in exp:
+        expName = targetExpName+"."+key.split(".")[2]
+    
+    modelLoadPath = os.path.join("./log/1223.brutL0L1", expName, folder["retrainSavedModel"], "NewNasModel{}_Final.pt".format(kth) )
+    print("modelLoadPath", modelLoadPath)
+    tmpModelWeight = torch.load( modelLoadPath )
+    net.load_state_dict(tmpModelWeight)
+    # exit()
     # tmpF(net)
     return net
 def prepareOpt(net):
@@ -162,6 +194,13 @@ def gradCount(net):
                 dim = e*dim
             count = count + dim
     return count
+
+def reviewDatasetAcc(k, net):
+    datasets = ["../dataset/test", "../dataset2/test", "../dataset3/test"] 
+    DatasetReviewer(kth=str(k), allData=None, device=device, cfg=cfg)
+    DatasetReviewer.reviewEachDataset(net, datasets)
+    
+
 def myTrain(kth, trainData, trainDataLoader, valDataLoader, net, model_optimizer, criterion, writer):
     record_train_loss = np.array([])
     record_val_loss = np.array([])
@@ -264,9 +303,9 @@ if __name__ == '__main__':
         trainData, valData = prepareDataSet()
         trainDataLoader, valDataLoader = prepareDataLoader(trainData, valData)
     
-        
         criterion = prepareLossFunction()
         net = prepareModel(k)
+        # net = preparedTransferModel(k)
         histDrawer = HistDrawer(folder["pltSavedDir"])
         histDrawer.drawNetConvWeight(net, tag="ori_{}".format(str(k)))
         model_optimizer = prepareOpt(net)
@@ -278,13 +317,16 @@ if __name__ == '__main__':
         # info training loop
         last_epoch_val_acc, lossRecord, accRecord = myTrain(k, trainData, trainDataLoader, valDataLoader, net, model_optimizer, criterion, writer=None)  # 進入model訓練
 
+        #info exam each dataset accuracy respectively
+        # reviewDatasetAcc(k)
+
         histDrawer.drawNetConvWeight(net, tag="trained_{}".format(str(k)))
         #info record training processs
         alMonitor = AccLossMonitor(k, folder["pltSavedDir"], folder["accLossDir"], trainType="retrain")
         alMonitor.plotAccLineChart(accRecord)
         alMonitor.plotLossLineChart(lossRecord)
         alMonitor.saveAccLossNp(accRecord, lossRecord)
-
+        testC.saveDatasetAcc(kth=k)
         valList.append(last_epoch_val_acc)
         print('retrain validate accuracy:')
         print(valList)

@@ -38,28 +38,28 @@ def doExpBasedExperiments():
 def brutNas():
     # this funciion also handle decode job
     initiManualAssign = {
-        "layer_0_1": [
-            1,
-            0,
-            0,
-            0,
-            0
-        ],
-        "layer_1_2": [
-            1,
-            0,
-            0,
-            0,
-            0
-        ],
-        "layer_2_3": [
-            1,
-            0,
-            0,
-            0,
-            0
-        ],
-        "layer_3_4": [
+        # "layer_0_1": [
+        #     1,
+        #     0,
+        #     0,
+        #     0,
+        #     0
+        # ],
+        # "layer_1_2": [
+        #     1,
+        #     0,
+        #     0,
+        #     0,
+        #     0
+        # ],
+        # "layer_2_3": [
+        #     1,
+        #     0,
+        #     0,
+        #     0,
+        #     0
+        # ],
+        "layer_0_4": [
             0,
             0,
             0,
@@ -75,20 +75,23 @@ def brutNas():
         ],
     }
     # brutally train all possible arch of first two layers
-    numOfOp = 5
-    for i in range(numOfOp):
+    count = 0
+    numberOfOp = 5
+    for i in range(numberOfOp):
         # for fisrt layer
-        for j in range(numOfOp):
-            # for k in range(numOfOp):
-                # for l in range(numOfOp):
+        for j in range(numberOfOp):
+            # for k in range(numberOfOp):
+            # for l in range(2, -1, -1):
+            count = count + 1
             # for second layeer
             manualAssign = copy.deepcopy(initiManualAssign)
-            manualAssign["layer_3_4"][i] = 1
+            manualAssign["layer_0_4"][i] = 1
             manualAssign["layer_4_5"][j] = 1
-            # manualAssign["layer_2_3"][k] = 1
-            # manualAssign["layer_3_5"][l] = 1
+            # manualAssign["layer_2_5"][k] = 1
+            # manualAssign["layer_4_5"][l] = 1
+            # manualAssign["layer_3_4"][j] = 1
             f = setStdoutToFile("./curExperiment.json")
-            curExpName = "0211.brutL3L4.{}_{}".format(i, j)
+            curExpName = "0219_2.brutL0L1.{}_{}".format(i, j)
             desDir = join("./log", curExpName)
             print(json.dumps({curExpName:1}, indent=4))
             setStdoutToDefault(f)
