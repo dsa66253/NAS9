@@ -1,29 +1,21 @@
-import math
 import os
-import sys
 import torch
 import torch.optim as optim
 from test import TestController
 # import torch.backends.cudnn as cudnn
 import argparse
 from torch import nn
-from torchvision import transforms, datasets
 from data.config import cfg_newnasmodel, trainDataSetFolder, seed
-from tensorboardX import SummaryWriter
 import numpy as np
 from data.config import folder
 from feature.make_dir import makeDir
 from feature.random_seed import set_seed_cpu
-from PIL import ImageFile
 from tqdm import tqdm
 from models.retrainModel import NewNasModel
-from alexnet.alexnet import Baseline
 from utility.AccLossMonitor import AccLossMonitor
 from feature.utility import setStdoutToFile, setStdoutToDefault
 from feature.utility import getCurrentTime, accelerateByGpuAlgo, get_device
-import matplotlib.pyplot as plt
 from utility.DatasetHandler import DatasetHandler
-from torchvision import transforms
 from  utility.DatasetReviewer import DatasetReviewer
 import json 
 from utility.HistDrawer import HistDrawer
@@ -38,18 +30,11 @@ def printNetGrad(net):
         break
 def parse_args(k=0):
     parser = argparse.ArgumentParser(description='imagenet nas Training')
-    parser.add_argument('--network', default='newnasmodel', help='Backbone network mobile0.25 or resnet50')
     parser.add_argument('--num_workers', default=4, type=int, help='Number of workers used in dataloading')
     parser.add_argument('--lr', '--learning-rate', default=1e-3, type=float, help='initial learning rate')
     parser.add_argument('--momentum', default=0.9, type=float, help='momentum')
-    parser.add_argument('--resume_net', default=None, help='resume net for retraining')
-    parser.add_argument('--resume_epoch', default=0, type=int, help='resume iter for retraining')
     parser.add_argument('--weight_decay', default=5e-4, type=float, help='Weight decay for SGD')
     parser.add_argument('--gamma', default=0.1, type=float, help='Gamma update for SGD')
-    # parser.add_argument('--genotype_file', type=str, default='genotype_' + str(k) + '.npy',
-    #                     help='put decode file')
-    parser.add_argument('--pltSavedDir', type=str, default='./plot',
-                        help='plot train loss and val loss')
     args = parser.parse_args()
     return args
 
@@ -103,6 +88,37 @@ def prepareModel(kth):
     print("net.cellArch:", net.cellArch)
     print("net", net)
     initialize_weights(net, seed_weight)
+    # tmpF(net)
+    return net
+def preparedTransferModel(kth):
+    #info load decode json
+    filePath = os.path.join(folder["decode"], "{}th_decode.json".format(kth))
+    f = open(filePath)
+    archDict = json.load(f)
+        
+    #info prepare model
+    print("Preparing model...")
+    set_seed_cpu(seed_weight)
+    net = NewNasModel(cellArch=archDict)
+    net.train()
+    net = net.to(device)
+    print("net.cellArch:", net.cellArch)
+    print("net", net)
+    initialize_weights(net, seed_weight)
+
+    #info prepare pretrain weight
+    f = open("./curExperiment.json")
+    exp = json.load(f)
+    f.close()
+    targetExpName = "1223.brutL0L1"
+    for key in exp:
+        expName = targetExpName+"."+key.split(".")[2]
+    
+    modelLoadPath = os.path.join("./log/1223.brutL0L1", expName, folder["retrainSavedModel"], "NewNasModel{}_Final.pt".format(kth) )
+    print("modelLoadPath", modelLoadPath)
+    tmpModelWeight = torch.load( modelLoadPath )
+    net.load_state_dict(tmpModelWeight)
+    # exit()
     # tmpF(net)
     return net
 def prepareOpt(net):
@@ -178,6 +194,13 @@ def gradCount(net):
                 dim = e*dim
             count = count + dim
     return count
+
+def reviewDatasetAcc(k, net):
+    datasets = ["../dataset/test", "../dataset2/test", "../dataset3/test"] 
+    DatasetReviewer(kth=str(k), allData=None, device=device, cfg=cfg)
+    DatasetReviewer.reviewEachDataset(net, datasets)
+    
+
 def myTrain(kth, trainData, trainDataLoader, valDataLoader, net, model_optimizer, criterion, writer):
     record_train_loss = np.array([])
     record_val_loss = np.array([])
@@ -280,9 +303,9 @@ if __name__ == '__main__':
         trainData, valData = prepareDataSet()
         trainDataLoader, valDataLoader = prepareDataLoader(trainData, valData)
     
-        
         criterion = prepareLossFunction()
         net = prepareModel(k)
+        # net = preparedTransferModel(k)
         histDrawer = HistDrawer(folder["pltSavedDir"])
         histDrawer.drawNetConvWeight(net, tag="ori_{}".format(str(k)))
         model_optimizer = prepareOpt(net)
@@ -294,13 +317,16 @@ if __name__ == '__main__':
         # info training loop
         last_epoch_val_acc, lossRecord, accRecord = myTrain(k, trainData, trainDataLoader, valDataLoader, net, model_optimizer, criterion, writer=None)  # 進入model訓練
 
+        #info exam each dataset accuracy respectively
+        # reviewDatasetAcc(k)
+
         histDrawer.drawNetConvWeight(net, tag="trained_{}".format(str(k)))
         #info record training processs
         alMonitor = AccLossMonitor(k, folder["pltSavedDir"], folder["accLossDir"], trainType="retrain")
         alMonitor.plotAccLineChart(accRecord)
         alMonitor.plotLossLineChart(lossRecord)
         alMonitor.saveAccLossNp(accRecord, lossRecord)
-
+        testC.saveDatasetAcc(kth=k)
         valList.append(last_epoch_val_acc)
         print('retrain validate accuracy:')
         print(valList)

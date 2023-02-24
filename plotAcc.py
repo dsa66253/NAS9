@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 import numpy as np
 import os
-from data.config import cfg_newnasmodel as cfg
+from data.config import cfg_newnasmodel as cfg, folder
 def createMAvg(input):
     howMany = 5
     ma = np.copy(input)
@@ -92,11 +92,28 @@ def plot_combined_acc(folder = "./accLoss", title='combine', saveFolder="./plot"
         fileName = trainType+"_"+  str(indexOfFig)
         print("save png to ", os.path.join(saveFolder, fileName))
         plt.savefig(os.path.join(saveFolder, fileName))
-
+def plot_dataset_acc():
+    datasets = ["dataset1", "dataset2", "dataset3"]
+    colors = {"dataset1":"tab:red", "dataset2":"tab:cyan", "dataset3":"tab:brown"}
+    for kth in range(cfg["numOfKth"]):
+        fig, ax = plt.subplots(figsize=(10, 8), sharex=True, constrained_layout=True)
+        for dataset in datasets:
+            accFile = os.path.join(folder["accLossDir"], "{}_test_acc_{}_{}.npy".format("retrain", dataset, str(kth)))
+            ax.plot(np.load(accFile), c=colors[dataset], label=dataset)
+            print(dataset, kth, np.load(accFile).shape )
+        ax.set_xlabel('epoch')
+        ax.set_ylabel('acc')
+        ax.set_title("check acc on different dataset")
+        ax.legend()
+        # plt.show()
+        savePath =os.path.join(folder["pltSavedDir"],  "{}_test_acc_{}".format("retrain", str(kth)))
+        plt.savefig(savePath)
+        print("save png to ", savePath)
 
 if __name__=="__main__":
     # plot_combined_acc(trainType="Nas")
     plot_combined_acc(trainType="retrain")
+    plot_dataset_acc()
     # net = "alexnet"
     # folder = "./accLoss" 
     # title='combine_'+net
