@@ -16,9 +16,11 @@ class AccCollector():
         self.title = self.title +"."+ title + color
         a = []
         labels = []
-        for i in range(5):
-            for j in range(5):
-                expAcc = "{}.{}_{}".format(baseDir, i, j )
+        numOfOp = 3
+        for i in range(numOfOp):
+            for j in range(numOfOp):
+                # for l in range(numOfOp):
+                expAcc = "{}.{}_{}".format(baseDir, i, j)
                 labels.append(expAcc)
                 data = []
                 for k in range(10):
@@ -26,6 +28,7 @@ class AccCollector():
                     #* get last epoch acc
                     loadPath = "./log/{}/{}.{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), dataset, str(k)) 
                     # print(loadPath)
+                    # print(np.load(loadPath))
                     # acc = round(np.load(loadPath)[-1], 2)
                     #* get test acc by correspoding max val acc
                     acc = self.__getAccByMaxVal(i, j, k, baseDir)
@@ -48,7 +51,7 @@ class AccCollector():
 
     
     def savePlt(self, dataset):
-        saveName = os.path.join("./log", self.baseDir, "box_"+dataset+self.fileNameTag)
+        saveName = os.path.join("./log", self.baseDir, "box_"+dataset+self.fileNameTag+".png")
         print("save to ", saveName)
         plt.savefig(saveName)
         plt.close()
@@ -209,18 +212,18 @@ def getLoss():
         accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
     np.set_printoptions(precision=2)
-    accC = AccCollector("1122_2.brutL0L1", fileNameTag="")
+    accC = AccCollector("1201.brutL0L1", fileNameTag="_0209_6")
     testOrVal = "test"
-    accC.addExp("1122_2.brutL0L1", color="red", dataset=testOrVal, title="1122_2.brutL0L1")
-    # accC.addExp("1122.brutL0L1", color="green", dataset=testOrVal, title="1122.brutL0L1")
-    # accC.addExp("1125.brutL0L1", color="blue", dataset=testOrVal, title="1125.brutL0L1")
+    accC.addExp("1201.brutL0L1", color="red", dataset=testOrVal, title="1201.brutL0L1")
+    accC.addExp("1208.brutL1L2", color="green", dataset=testOrVal, title="1208.brutL1L2")
+    accC.addExp("1206_2.brutL2L3", color="blue", dataset=testOrVal, title="1206_2.brutL2L3")
     # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
     accC.savePlt(dataset=testOrVal)
     # getLoss()
     # accC.addExp("1027_brutL3L4", color="red", dataset="test", title="1027_brutL3L4")
     # accC.addExp("1029_2brutL3L4", color="green", dataset="test", title="1029_2brutL3L4")
     # accC.addExp("1103_brutL3L4", color="blue", dataset="test", title="1103_brutL3L4")
-    accC.savePlt(dataset="test")
+    # accC.savePlt(dataset="test")
     # accC.boxPlot("val")
     # accC.boxPlot("test")
     # accC.saveCsv("val")
