@@ -227,6 +227,16 @@ if __name__=="__main__":
                 newName = target
                 os.rename(path+"/"+filename, path+"/"+newName)
                 print(filename, newName)
+        # newName = str(i)+"_"+filename
+        # os.rename(path+"/"+filename, path+"/"+newName)
+        # print(filename, newName)
+        # i = i+1
+        # if len(splitName)==2:
+        #     newName = splitName[0]+".b"+splitName[1]
+        #     print(filename, splitName, newName)
+        #     os.rename(path+"/"+filename, path+"/"+newName)
+		# my_source =path + filename
+		# my_dest =path + my_dest
     exit()
     # path="/home/marry/code/NAS9/log/1029_brutL3L4"
     # for filename in os.listdir(path):
