@@ -92,9 +92,14 @@ class DatasetHandler():
         return len(self.trainDataset)
     def __getitem__(self, index):
         return self.trainDataset[index]
-    def getClassToIndex(self):
+    def getClassToIndex(self)->dict:
         return self.originalData.class_to_idx
-
+    def getIndexToClass(self)->dict:
+        # key of return object is Int type
+        IndexToClass = {}
+        for key in self.originalData.class_to_idx:
+            IndexToClass[self.originalData.class_to_idx[key]] = key
+        return IndexToClass
 def printImage(train_data, index):
 
     fig, axes = plt.subplots(len(train_data)//5, 5)

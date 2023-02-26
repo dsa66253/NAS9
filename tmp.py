@@ -6,6 +6,7 @@ import csv
 import os
 import matplotlib.pyplot as plt
 from utility.HistDrawer import HistDrawer
+from tabulate import tabulate
 class AccCollector():
     def __init__(self, baseDir = "1027_brutL3L4", fileNameTag=""):
         self.fileNameTag = fileNameTag
@@ -210,6 +211,10 @@ if __name__=="__main__":
     # c.print_haircolor()
     # t = test()
     # t.foo()
+    dic = {'col 1':[122, 5], 'col 2':[21], 'col 3':[12], 'col 4':[45]}
+    table = [['col 1', 'col 2', 'col 3', 'col 4'], [1, 2222, 30, 500], [4, 55, 6777, 1]]
+    print(tabulate(dic, headers=dic,tablefmt='fancy_grid'))
+    exit()
     print(np.load("/home/marry/code/NAS9/log/0211.brutL3L4/0211.brutL3L4.0_0/accLoss/retrain_test_acc_0.npy"))
     exit()
     targetFileName = os.listdir("/home/marry/code/dataset123/train")
