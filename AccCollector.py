@@ -16,25 +16,25 @@ class AccCollector():
         self.title = self.title +"."+ title + color
         a = []
         labels = []
-        numOfOp = 3
+        numOfOp = 5
         for i in range(numOfOp):
             for j in range(numOfOp):
-                for l in range(numOfOp):
-                    expAcc = "{}.{}_{}_{}".format(baseDir, i, j, l)
-                    labels.append(expAcc)
-                    data = []
-                    for k in range(10):
-                        # base = os.walk(baseDir)
-                        #* get last epoch acc
-                        loadPath = "./log/{}/{}.{}_{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), str(l), dataset, str(k)) 
-                        # print(loadPath)
-                        # print(np.load(loadPath))
-                        acc = round(np.load(loadPath)[-1], 2)
-                        #* get test acc by correspoding max val acc
-                        # acc = self.__getAccByMaxVal(i, j, k, baseDir)
-                        data.append(acc)
-                        # self.a.append([expAcc, k , acc])
-                    a.append(data)
+                # for l in range(numOfOp):
+                expAcc = "{}.{}_{}".format(baseDir, i, j)
+                labels.append(expAcc)
+                data = []
+                for k in range(10):
+                    # base = os.walk(baseDir)
+                    #* get last epoch acc
+                    loadPath = "./log/{}/{}.{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), dataset, str(k)) 
+                    # print(loadPath)
+                    # print(np.load(loadPath))
+                    acc = round(np.load(loadPath)[-1], 2)
+                    #* get test acc by correspoding max val acc
+                    # acc = self.__getAccByMaxVal(i, j, k, baseDir)
+                    data.append(acc)
+                    # self.a.append([expAcc, k , acc])
+                a.append(data)
         if hasattr(self, "axs"):
             pass
         else:
@@ -48,10 +48,14 @@ class AccCollector():
         # self.axs.set_ylim([self.ymin, self.ymax])
         self.axs.set_yticks(np.arange(self.ymin, self.ymax, 1))
         plt.xticks(rotation=90)
-
+    def getDynamicXLabel(self, numOfTotalLayer, numOfOp):
+        label = []
+        for i in range(numOfTotalLayer):
+            for j in range(numOfTotalLayer):
+                label.append("")
     
     def savePlt(self, dataset):
-        saveName = os.path.join("./log", self.baseDir, "box_"+dataset+self.fileNameTag)
+        saveName = os.path.join("./log", self.baseDir, "box_"+dataset+self.fileNameTag+".png")
         print("save to ", saveName)
         plt.savefig(saveName)
         plt.close()
@@ -219,7 +223,6 @@ if __name__=="__main__":
     # accC.addExp("0119_2.brutL2L3L4", color="green", dataset=testOrVal, title="0119_2.brutL2L3L4")
     # accC.addExp("0124.brutL2L3L4", color="blue", dataset=testOrVal, title="0124.brutL2L3L4")
     # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
-    accC.savePlt(dataset=testOrVal)
     # getLoss()
     # accC.addExp("1027_brutL3L4", color="red", dataset="test", title="1027_brutL3L4")
     # accC.addExp("1029_2brutL3L4", color="green", dataset="test", title="1029_2brutL3L4")

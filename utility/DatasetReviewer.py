@@ -5,11 +5,13 @@ import torch
 from .DatasetHandler import DatasetHandler
 from data.config import trainDataSetFolder
 from torchvision import datasets
+from tabulate import tabulate
+from .TestController import TestController
 class DatasetReviewer():
-    def __init__(self, batch_size, kth, allData, device):
+    def __init__(self, kth, allData, device, cfg=cfg):
+        self.cfg = cfg
         self.device = device
-        self.numOfClasses = cfg["numOfClasses"]
-        self.batch_size = batch_size
+        self.batch_size = cfg["batch_size"]
         self.rotater = T.RandomRotation(degrees=10)
         self.flipTransform = T.RandomHorizontalFlip(p=1)
         self.kth = kth
@@ -85,7 +87,12 @@ class DatasetReviewer():
     def showReport(self):
         for key in self.static:
             print(self.static[key])
-    
+    def reviewEachDataset(self, net,  datasets=[]):
+        accDic = {}
+        for dataset in datasets:
+            testC = TestController(self.cfg, testDataSetFolder=dataset)
+            accDic[dataset] = [testC.test(net)]
+        print(tabulate(accDic, headers=accDic.keys(), tablefmt='fancy_grid'))
 class DataStatic():
     def __init__(self, name, index):
         self.name = name
@@ -117,8 +124,7 @@ if __name__ == "__main__":
     k=0
     trainDataSetFolder = "../datasetPractice/train"
     seed_img=20
-    datasetReviewer = DatasetReviewer(cfg["batch_size"],
-                                        k,
+    datasetReviewer = DatasetReviewer(k,
                                         DatasetHandler.getOriginalDataset(trainDataSetFolder, cfg, seed_img), 
                                         "cuda")
     pass

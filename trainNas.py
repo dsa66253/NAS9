@@ -491,7 +491,7 @@ if __name__ == '__main__':
         valList.append(last_epoch_val_ac)
         print('train validate accuracy:', valList)
         
-        datasetReviewer = DatasetReviewer(cfg["batch_size"],
+        datasetReviewer = DatasetReviewer(
                                         k,
                                         DatasetHandler.getOriginalDataset(trainDataSetFolder, cfg, seed_img), 
                                         device)
