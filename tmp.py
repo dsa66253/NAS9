@@ -6,6 +6,10 @@ import csv
 import os
 import matplotlib.pyplot as plt
 from utility.HistDrawer import HistDrawer
+from os import listdir
+from os.path import isfile, join
+from data.config import dataset1Name, dataset2Name, dataset3Name 
+import shutil
 class AccCollector():
     def __init__(self, baseDir = "1027_brutL3L4", fileNameTag=""):
         self.fileNameTag = fileNameTag
@@ -203,24 +207,34 @@ class Child(Mother):
         Mother.__init__(self)   
     def print_haircolor(self):
         print (self._haircolor)
-
+def getAllFileName(dirPath):
+    return [f for f in listdir(dirPath) if isfile(join(dirPath, f))]
+def makeDir(folderPath):
+    if not os.path.exists(folderPath):
+        os.makedirs(folderPath)
 if __name__=="__main__":
     # plot_combined_acc(trainType="Nas")
     # c = Child()
     # c.print_haircolor()
     # t = test()
     # t.foo()
-    targetFileName = os.listdir("/home/mary/code/dataset123/train")
-    path="/home/mary/code/dataset3/train"
-    i=0
-    for filename in os.listdir(path):
-        # print(filename)
-        for target in targetFileName:
-            if filename in target:
-                newName = target
-                os.rename(path+"/"+filename, path+"/"+newName)
-                print(filename, newName)
-    exit()
+    
+    for className in dataset1Name:
+        fromDirPath = "../dataset13/test/{}".format(className)
+        toDirPath = "../dataset13_half/test/{}".format(className)
+        fileNameList = getAllFileName(fromDirPath)
+        makeDir(toDirPath)
+        
+        count = 0
+        for fileName in fileNameList:
+            # if count>499:
+            #     break
+            shutil.copyfile(os.path.join(fromDirPath, fileName), os.path.join(toDirPath, fileName))
+            
+            count = count + 1
+        print(toDirPath, "number of files", count)
+    
+    # print("number of files", len(fileNameList), fileNameList)
     exit()
     expList = ["1202_3.brutL1L2", "1204.brutL2L3", "1206.brutL3L4"]
     for expName in expList:
