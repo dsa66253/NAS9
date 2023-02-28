@@ -53,7 +53,32 @@ class AccCollector():
         for i in range(numOfTotalLayer):
             for j in range(numOfTotalLayer):
                 label.append("")
-    
+    def addExp2(self, baseDirList, color="red", dataset="val", title=""):
+        self.title = self.title +"."+ ", ".join(baseDirList)
+        a = []
+        for baseDir in baseDirList:
+            # info load npy
+            data = []
+            numOfkth=10
+            for kth in range(numOfkth):
+                loadPath = "./log/{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, dataset, str(kth)) 
+                acc = round(np.load(loadPath)[-1], 2)
+                #* get test acc by correspoding max val acc
+                # acc = self.__getAccByMaxVal(i, j, k, baseDir)
+                data.append(acc)
+            if hasattr(self, "axs"):
+                pass
+            else:
+                self.fig, self.axs = plt.subplots(1, 1, figsize=(10, 8), sharex=True, constrained_layout=True)
+            a.append(data)
+        print(a, baseDirList)
+        self.axs.boxplot(a, labels=baseDirList,  showmeans=False,  boxprops=dict(color=color), meanprops=dict(color=color))
+        self.axs.yaxis.grid()
+        self.axs.xaxis.grid()
+        self.axs.set_title(self.title)
+        # self.axs.set_ylim([self.ymin, self.ymax])
+        self.axs.set_yticks(np.arange(self.ymin, self.ymax, 1))
+        plt.xticks(rotation=90)
     def savePlt(self, dataset):
         saveName = os.path.join("./log", self.baseDir, "box_"+dataset+self.fileNameTag+".png")
         print("save to ", saveName)
@@ -217,17 +242,24 @@ def getLoss():
         accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
     np.set_printoptions(precision=2)
-    accC = AccCollector("0202_2.brutL0L1L2", fileNameTag="0202")
+    accC = AccCollector("0226", fileNameTag="_0302_2")
     testOrVal = "test"
-    accC.addExp("0202_2.brutL0L1L2", color="red", dataset=testOrVal, title="0202_2.brutL0L1L2")
-    # accC.addExp("0119_2.brutL2L3L4", color="green", dataset=testOrVal, title="0119_2.brutL2L3L4")
-    # accC.addExp("0124.brutL2L3L4", color="blue", dataset=testOrVal, title="0124.brutL2L3L4")
-    # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
+    baseDirList = ["0226"]
+    for i in range(2, 10):
+        baseDirList.append("0226_{}".format(str(i)))
+    baseDirList.append("0227")
+    for i in range(2, 13):
+        baseDirList.append("0227_{}".format(str(i)))
+    print(baseDirList)
+    accC.addExp2(baseDirList=baseDirList, color="red", dataset=testOrVal, title="0302")
+    # accC.addExp("0226_3", color="green", dataset=testOrVal, title="0226_3")
+    # accC.addExp("0226_6", color="blue", dataset=testOrVal, title="0226_6")
+    # accC.addExp("0226", color="black", dataset=testOrVal, title="0226")
     # getLoss()
     # accC.addExp("1027_brutL3L4", color="red", dataset="test", title="1027_brutL3L4")
     # accC.addExp("1029_2brutL3L4", color="green", dataset="test", title="1029_2brutL3L4")
     # accC.addExp("1103_brutL3L4", color="blue", dataset="test", title="1103_brutL3L4")
-    # accC.savePlt(dataset="test")
+    accC.savePlt(dataset="test")
     # accC.boxPlot("val")
     # accC.boxPlot("test")
     # accC.saveCsv("val")
