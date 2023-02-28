@@ -108,10 +108,60 @@ def brutNas():
             subprocess.call('./train.sh')
             
             # exit()
-            
+def brutInit():
+    # this funciion also handle decode job
+    initiManualAssign = {
+        "layer_0_4": [
+            1,
+            0,
+            0,
+            0,
+            0
+        ],
+        "layer_4_5": [
+            1,
+            0,
+            0,
+            0,
+            0
+        ],
+    }
+    # brutally train all possible arch of first two layers
+    expNameList = [
+    "0226",
+    "0226_2",
+    "0226_3",
+    "0226_4",
+    "0226_5",
+    "0226_6",
+    "0226_7",
+    "0226_8",
+    "0226_9",
+    ]
+    count = 0
+    for expName in expNameList:
+        manualAssign = copy.deepcopy(initiManualAssign)
+        f = setStdoutToFile("./curExperiment.json")
+        curExpName = expName
+        desDir = join("./log", curExpName)
+        print(json.dumps({curExpName:1}, indent=4))
+        setStdoutToDefault(f)
+
+        makeDir(desDir)
+        makeAllDir()
+        #info handle decode job
+        for kth in range(cfg["numOfKth"]):
+            filePath = "./decode/{}th_decode.json".format(kth)
+            f = setStdoutToFile(filePath)
+            print(json.dumps(manualAssign, indent=4)) #* make ndarray to list
+            setStdoutToDefault(f)   
+        
+        subprocess.call('./train.sh')
+        
+        # exit()
 
 if __name__=="__main__":
-    brutNas()
+    brutInit()
 
     
 
