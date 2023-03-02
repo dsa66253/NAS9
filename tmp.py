@@ -6,6 +6,10 @@ import csv
 import os
 import matplotlib.pyplot as plt
 from utility.HistDrawer import HistDrawer
+from os import listdir
+from os.path import isfile, join
+from data.config import dataset1Name, dataset2Name, dataset3Name 
+import shutil
 class AccCollector():
     def __init__(self, baseDir = "1027_brutL3L4", fileNameTag=""):
         self.fileNameTag = fileNameTag
@@ -203,55 +207,45 @@ class Child(Mother):
         Mother.__init__(self)   
     def print_haircolor(self):
         print (self._haircolor)
-
+def getAllFileName(dirPath):
+    return [f for f in listdir(dirPath) if isfile(join(dirPath, f))]
+def makeDir(folderPath):
+    if not os.path.exists(folderPath):
+        os.makedirs(folderPath)
 if __name__=="__main__":
     # plot_combined_acc(trainType="Nas")
     # c = Child()
     # c.print_haircolor()
     # t = test()
     # t.foo()
-    targetFileName = os.listdir("/home/yi/mary/dataset123/train")
-    path="/home/yi/mary/dataset3/test"
-    i=0
-    for filename in os.listdir(path):
-        # print(filename)
-        for target in targetFileName:
-            if filename in target:
-                newName = target
-                os.rename(path+"/"+filename, path+"/"+newName)
-                print(filename, newName)
-        # newName = str(i)+"_"+filename
-        # os.rename(path+"/"+filename, path+"/"+newName)
-        # print(filename, newName)
-        # i = i+1
-        # if len(splitName)==2:
-        #     newName = splitName[0]+".b"+splitName[1]
-        #     print(filename, splitName, newName)
-        #     os.rename(path+"/"+filename, path+"/"+newName)
-		# my_source =path + filename
-		# my_dest =path + my_dest
+    
+    for className in dataset3Name:
+        fromDirPath = "../dataset13/test/{}".format(className)
+        toDirPath = "../dataset13_half/test/{}".format(className)
+        makeDir(toDirPath)
+        fileNameList = getAllFileName(fromDirPath)
+        
+        count = 0
+        for fileName in fileNameList:
+            if count>499:
+                break
+            shutil.copyfile(os.path.join(fromDirPath, fileName), os.path.join(toDirPath, fileName))
+            
+            count = count + 1
+        print(toDirPath, "number of files", count)
+    
+    # print("number of files", len(fileNameList), fileNameList)
     exit()
-    # path="/home/marry/code/NAS9/log/1029_brutL3L4"
-    # for filename in os.listdir(path):
-    #     # print(filename)
-    #     splitName = filename.split("_b")
-    #     if len(splitName)==2:
-    #         newName = splitName[0]+".b"+splitName[1]
-    #         print(filename, splitName, newName)
-    #         os.rename(path+"/"+filename, path+"/"+newName)
-	# 	# my_source =path + filename
-	# 	# my_dest =path + my_dest
-    # exit()
-    # expList = ["1202_3.brutL1L2", "1204.brutL2L3", "1206.brutL3L4"]
-    # for expName in expList:
-    #     for i in range(5):
-    #         for j in range(5):
-    #             # expName="1201.brutL0L1"
-    #             baseDir=os.path.join("./log", expName, "{}.{}_{}".format(expName, str(i), str(j)))
-    #             accD = AccDrawer(expName=expName, baseDir=baseDir)
-    #             sourceFolder = os.path.join(baseDir, "accLoss")
-    #             saveFolder = os.path.join(baseDir, "plot")
-    #             accD.plot_combined_acc(sourceFolder=sourceFolder, saveFolder=saveFolder, trainType="retrain")
+    expList = ["1202_3.brutL1L2", "1204.brutL2L3", "1206.brutL3L4"]
+    for expName in expList:
+        for i in range(5):
+            for j in range(5):
+                # expName="1201.brutL0L1"
+                baseDir=os.path.join("./log", expName, "{}.{}_{}".format(expName, str(i), str(j)))
+                accD = AccDrawer(expName=expName, baseDir=baseDir)
+                sourceFolder = os.path.join(baseDir, "accLoss")
+                saveFolder = os.path.join(baseDir, "plot")
+                accD.plot_combined_acc(sourceFolder=sourceFolder, saveFolder=saveFolder, trainType="retrain")
         
     # net = "alexnet"
     # folder = "./accLoss" 
@@ -274,6 +268,31 @@ if __name__=="__main__":
     # print("save png to ", os.path.join(saveFolder, title))
     # plt.savefig(os.path.join(saveFolder, title))
     exit()
+    folder = "./accLoss"
+    for kth in range(3):
+        trainNasTrainAccFile = os.path.join(folder, "trainNasTrainAcc_{}.npy".format(str(kth)) )
+        trainNasnValAccFile = os.path.join( folder,"trainNasValAcc_{}.npy".format(str(kth)) )
+        testAccFile = os.path.join(folder, "testAcc_{}.npy".format(str(kth)) )
+        
+        #info calculate deravitive by dy=0
+        for i in range(1, len(ma)):
+            dx = ma[i]-ma[i-1]
+            dy = 1
+            derivativeMa.append(dx/dy)
+        # print(ma)
+        # print(derivativeMa)
+        # exit()
+        #info find index by condition
+        firstNegMaIndex=0
+        for i in range(len(derivativeMa)):
+            if derivativeMa[i]<0 and i>startEpoch:
+                firstNegMaIndex=i
+                break
+        if firstNegMaIndex==0:
+            firstNegMaIndex=startEpoch
+        # print(derivativeMa[firstNegMaIndex-1:firstNegMaIndex+2])
+        # exit()
+        # return firstNegMaIndex
     # def boxPlotCsv(self):
     #     self.a = []
     #     for i in range(5):
@@ -301,7 +320,29 @@ if __name__=="__main__":
             ma[i] = np.mean(window)
             # print(i, window, ma[i])
         return ma
-
+def getLoss():
+    expList = ["1027_brutL3L4", "1028_2brutL3L4", "1029_2brutL3L4", "1029_brutL3L4", "1103_brutL3L4", "1111_2brutL0L1"]
+    expList = ["1122_2.brutL0L1"]
+    for exp in expList:
+        print(exp)
+        accC = AccCollector(exp, fileNameTag="")
+        accC.calDiffValTest("test", expName=exp)
+if __name__=="__main__":
+    np.set_printoptions(precision=2)
+    accC = AccCollector("1118_2.brutL0L1", fileNameTag="_1208_2")
+    testOrVal = "test"
+    accC.addExp("1118_2.brutL0L1", color="red", dataset=testOrVal, title="1118_2.brutL0L1")
+    accC.addExp("1202_3.brutL1L2", color="green", dataset=testOrVal, title="1202_3.brutL1L2")
+    accC.addExp("1204.brutL2L3", color="blue", dataset=testOrVal, title="1204.brutL2L3")
+    # accC.addExp("1111_brutL0L1", color="black", dataset=testOrVal, title="1111_brutL0L1")
+    accC.savePlt(dataset=testOrVal)
+    # getLoss()
+    # accC.addExp("1027_brutL3L4", color="red", dataset="test", title="1027_brutL3L4")
+    # accC.addExp("1029_2brutL3L4", color="green", dataset="test", title="1029_2brutL3L4")
+    # accC.addExp("1103_brutL3L4", color="blue", dataset="test", title="1103_brutL3L4")
+    # accC.savePlt(dataset="test")
+    # accC.boxPlot("val")
+    # accC.boxPlot("test")
     # accC.saveCsv("val")
     
     # accC.saveCsv("test")
