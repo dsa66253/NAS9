@@ -10,18 +10,23 @@ class AccCollector():
         self.baseDir = baseDir
         self.saveFolder="./tmp"
         self.title = ""
-        self.ymax = 85
+        self.ymax = 81
         self.ymin = 65
+        self.expName2Color = {} # use for legend
+        self.expName2Boxplot = {} # use for legend
+        self.xCount = 1
     def addExp(self, baseDir, color="red", dataset="val", title=""):
         self.title = self.title +"."+ title + color
         a = []
         labels = []
+        xLabelCount = 1
         numOfOp = 5
         for i in range(numOfOp):
             for j in range(numOfOp):
                 # for l in range(numOfOp):
                 expAcc = "{}.{}_{}".format(baseDir, i, j)
-                labels.append(expAcc)
+                # labels.append(expAcc)
+                labels.append("{}_{}".format(i, j))
                 data = []
                 for k in range(10):
                     # base = os.walk(baseDir)
@@ -31,7 +36,7 @@ class AccCollector():
                     # print(np.load(loadPath))
                     acc = round(np.load(loadPath)[-1], 2)
                     #* get test acc by correspoding max val acc
-                    # acc = self.__getAccByMaxVal(i, j, k, baseDir)
+                    acc = self.__getAccByMaxVal(i, j, k, baseDir)
                     data.append(acc)
                     # self.a.append([expAcc, k , acc])
                 a.append(data)
@@ -41,12 +46,17 @@ class AccCollector():
             self.fig, self.axs = plt.subplots(1, 1, figsize=(10, 8), sharex=True, constrained_layout=True)
         # ax = fig.add_axes([0, 0, 1, 1])
         # print(baseDir, "a", a)
-        self.axs.boxplot(a, labels=labels,  showmeans=False,  boxprops=dict(color=color), meanprops=dict(color=color))
+        boxPlot = self.axs.boxplot(a, labels=labels,  showmeans=False,  boxprops=dict(color=color), meanprops=dict(color=color))
         self.axs.yaxis.grid()
         self.axs.xaxis.grid()
         self.axs.set_title(self.title)
+        self.axs.legend([boxPlot["boxes"][0]],[baseDir] , loc='upper right')
+        self.axs.set_ylabel("accuracy")
+        self.axs.set_xlabel("architecture")
         # self.axs.set_ylim([self.ymin, self.ymax])
         self.axs.set_yticks(np.arange(self.ymin, self.ymax, 1))
+        self.expName2Color[baseDir] = color
+        self.expName2Boxplot[baseDir] = boxPlot
         plt.xticks(rotation=90)
     def getDynamicXLabel(self, numOfTotalLayer, numOfOp):
         label = []
@@ -87,6 +97,12 @@ class AccCollector():
     #     plt.savefig(saveName)
     #     plt.close()
         # plt.savefig("plot.png")
+    def addLegend(self):
+        bps = []
+        colorsLabel = ["Dataset1", "Dataset2", "Dataset3"]
+        for k in self.expName2Boxplot:
+            bps.append(self.expName2Boxplot[k]["boxes"][0])
+        self.axs.legend(bps, colorsLabel , loc='lower right')
     def __getAccByMaxVal(self, i, j, k, baseDir):
         valAcc = np.load( "./log/{}/{}.{}_{}/accLoss/retrain_val_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), str(k)) )
         testAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_test_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), str(k)) )
@@ -216,12 +232,13 @@ def getLoss():
         accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
     np.set_printoptions(precision=2)
-    accC = AccCollector("1126.brutL0L1", fileNameTag="_0216_2")
+    accC = AccCollector("1129_4.brutL0L1", fileNameTag="_0613")
     testOrVal = "test"
-    accC.addExp("1126.brutL0L1", color="red", dataset=testOrVal, title="1126.brutL0L1")
-    accC.addExp("1029_2.brutL3L4", color="green", dataset=testOrVal, title="1029_2.brutL3L4")
-    accC.addExp("1125_2.brutL2L3", color="blue", dataset=testOrVal, title="1125_2.brutL2L3")
-    accC.addExp("0211.brutL3L4", color="black", dataset=testOrVal, title="0211.brutL3L4")
+    accC.addExp("1129_4.brutL0L1", color="red", dataset=testOrVal, title="1129_4.brutL0L1")
+    accC.addExp("1126.brutL0L1", color="green", dataset=testOrVal, title="1126.brutL0L1")
+    accC.addExp("1111.brutL0L1", color="blue", dataset=testOrVal, title="1111.brutL0L1")
+    # accC.addExp("0211.brutL3L4", color="black", dataset=testOrVal, title="0211.brutL3L4")
+    accC.addLegend()
     accC.savePlt(dataset=testOrVal)
     # getLoss()
     # accC.addExp("1027_brutL3L4", color="red", dataset="test", title="1027_brutL3L4")
