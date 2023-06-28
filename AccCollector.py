@@ -20,26 +20,27 @@ class AccCollector():
         a = []
         labels = []
         xLabelCount = 1
-        numOfOp = 5
+        numOfOp = 3
         for i in range(numOfOp):
             for j in range(numOfOp):
-                # for l in range(numOfOp):
-                expAcc = "{}.{}_{}".format(baseDir, i, j)
-                # labels.append(expAcc)
-                labels.append("{}_{}".format(i, j))
-                data = []
-                for k in range(10):
-                    # base = os.walk(baseDir)
-                    #* get last epoch acc
-                    loadPath = "./log/{}/{}.{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), dataset, str(k)) 
-                    # print(loadPath)
-                    # print(np.load(loadPath))
-                    acc = round(np.load(loadPath)[-1], 2)
-                    #* get test acc by correspoding max val acc
-                    acc = self.__getAccByMaxVal(i, j, k, baseDir)
-                    data.append(acc)
-                    # self.a.append([expAcc, k , acc])
-                a.append(data)
+                for l in range(numOfOp):
+                    # for l in range(numOfOp):
+                    expAcc = "{}.{}_{}_{}".format(baseDir, i, j, l)
+                    # labels.append(expAcc)
+                    labels.append("{}_{}_{}".format(i, j, l))
+                    data = []
+                    for k in range(10):
+                        # base = os.walk(baseDir)
+                        #* get last epoch acc
+                        loadPath = "./log/{}/{}.{}_{}_{}/accLoss/retrain_{}_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), str(l), dataset, str(k)) 
+                        # print(loadPath)
+                        # print(np.load(loadPath))
+                        acc = round(np.load(loadPath)[-1], 2)
+                        #* get test acc by correspoding max val acc
+                        # acc = self.__getAccByMaxVal(i, j, l, k, baseDir)
+                        data.append(acc)
+                        # self.a.append([expAcc, k , acc])
+                    a.append(data)
         if hasattr(self, "axs"):
             pass
         else:
@@ -49,7 +50,7 @@ class AccCollector():
         boxPlot = self.axs.boxplot(a, labels=labels,  showmeans=False,  boxprops=dict(color=color), meanprops=dict(color=color))
         self.axs.yaxis.grid()
         self.axs.xaxis.grid()
-        self.axs.set_title(self.title)
+        self.axs.set_title("")
         self.axs.legend([boxPlot["boxes"][0]],[baseDir] , loc='upper right')
         self.axs.set_ylabel("accuracy")
         self.axs.set_xlabel("architecture")
@@ -99,14 +100,15 @@ class AccCollector():
         # plt.savefig("plot.png")
     def addLegend(self):
         bps = []
-        colorsLabel = ["Dataset1", "Dataset2", "Dataset3"]
+        colorsLabel = ["Dataset13","Dataset12","Dataset23"]
         for k in self.expName2Boxplot:
             bps.append(self.expName2Boxplot[k]["boxes"][0])
         self.axs.legend(bps, colorsLabel , loc='lower right')
-    def __getAccByMaxVal(self, i, j, k, baseDir):
-        valAcc = np.load( "./log/{}/{}.{}_{}/accLoss/retrain_val_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), str(k)) )
-        testAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_test_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), str(k)) )
+    def __getAccByMaxVal(self, i, j, l, k, baseDir):
+        valAcc = np.load( "./log/{}/{}.{}_{}_{}/accLoss/retrain_val_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), str(l),  str(k)) )
+        testAcc = np.load("./log/{}/{}.{}_{}_{}/accLoss/retrain_test_acc_{}.npy".format(baseDir, baseDir, str(i), str(j), str(l), str(k)) )
         valIndex = np.argmax(valAcc)
+        print(testAcc)
         return round(testAcc[valIndex], 2)
     def saveCsv(self, dataset):
         self.a = []
@@ -232,11 +234,11 @@ def getLoss():
         accC.calDiffValTest("test", expName=exp)
 if __name__=="__main__":
     np.set_printoptions(precision=2)
-    accC = AccCollector("1129_4.brutL0L1", fileNameTag="_0613")
+    accC = AccCollector("0204.brutL0L1L2", fileNameTag="_0629_16")
     testOrVal = "test"
-    accC.addExp("1129_4.brutL0L1", color="red", dataset=testOrVal, title="1129_4.brutL0L1")
-    accC.addExp("1126.brutL0L1", color="green", dataset=testOrVal, title="1126.brutL0L1")
-    accC.addExp("1111.brutL0L1", color="blue", dataset=testOrVal, title="1111.brutL0L1")
+    accC.addExp("0204.brutL0L1L2", color="red", dataset=testOrVal, title="0202_2.brutL0L1L2")
+    accC.addExp("0204_2.brutL0L1L2", color="green", dataset=testOrVal, title="0202_3.brutL1L2L3")
+    accC.addExp("0204_3.brutL0L1L2", color="blue", dataset=testOrVal, title="10202.brutL0L1L2")
     # accC.addExp("0211.brutL3L4", color="black", dataset=testOrVal, title="0211.brutL3L4")
     accC.addLegend()
     accC.savePlt(dataset=testOrVal)
