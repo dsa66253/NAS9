@@ -149,29 +149,30 @@ class AccCollector():
         loss = 0
         for i in range(5):
             for j in range(5):
-                expAcc = "{}.{}_{}".format(self.baseDir, i, j )
-                tmp = [expAcc]
+                for l in range(5):
+                    expAcc = "{}.{}_{}_{}".format(self.baseDir, i, j, l)
+                    tmp = [expAcc]
 
-                for k in range(10):
-                    testAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_test_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(k)) )
-                    testIndex = np.argmax(testAcc)
-                    valAcc = np.load("./log/{}/{}.{}_{}/accLoss/retrain_val_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(k)) )
-                    valIndex = np.argmax(valAcc)
-                    firstNegMaIndex = self.getFirstNegMaIndex(valAcc, startEpoch=20)
-                    # print(firstNegMaIndex)
-                    # print(valAcc[:firstNegMaIndex])
-                    # print(testAcc[:firstNegMaIndex])
-                    valIndex = np.argmax(valAcc[:firstNegMaIndex])
-                    
-                    # if testIndex<20:
-                    #     print(expName, i, j, k)
-                    #     print("index", testIndex, valIndex, "acc", testAcc[testIndex], testAcc[valIndex])
-                    toHistList.append(testIndex)
-                    total = total + 1
-                    if testIndex==valIndex:
-                        hit = hit + 1
-                    else:
-                        loss = loss + (abs(testAcc[testIndex] - testAcc[valIndex]))
+                    for k in range(10):
+                        testAcc = np.load("./log/{}/{}.{}_{}_{}/accLoss/retrain_test_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(l), str(k)) )
+                        testIndex = np.argmax(testAcc)
+                        valAcc = np.load("./log/{}/{}.{}_{}_{}/accLoss/retrain_val_acc_{}.npy".format(self.baseDir, self.baseDir, str(i), str(j), str(l), str(k)) )
+                        valIndex = np.argmax(valAcc)
+                        firstNegMaIndex = self.getFirstNegMaIndex(valAcc, startEpoch=20)
+                        # print(firstNegMaIndex)
+                        # print(valAcc[:firstNegMaIndex])
+                        # print(testAcc[:firstNegMaIndex])
+                        valIndex = np.argmax(valAcc[:firstNegMaIndex])
+                        
+                        # if testIndex<20:
+                        #     print(expName, i, j, k)
+                        #     print("index", testIndex, valIndex, "acc", testAcc[testIndex], testAcc[valIndex])
+                        toHistList.append(testIndex)
+                        total = total + 1
+                        if testIndex==valIndex:
+                            hit = hit + 1
+                        else:
+                            loss = loss + (abs(testAcc[testIndex] - testAcc[valIndex]))
         histDrawer.drawHist(torch.tensor(toHistList, dtype=torch.float32), fileName="maxTestAcc", tag=expName)
         print(hit, total, "hit rate", hit/total)
         print("Avg loss ", loss/total)

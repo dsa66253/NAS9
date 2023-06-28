@@ -6,6 +6,10 @@ import csv
 import os
 import matplotlib.pyplot as plt
 from utility.HistDrawer import HistDrawer
+from os import listdir
+from os.path import isfile, join
+from data.config import dataset1Name, dataset2Name, dataset3Name 
+import shutil
 from tabulate import tabulate
 class AccCollector():
     def __init__(self, baseDir = "1027_brutL3L4", fileNameTag=""):
@@ -204,13 +208,45 @@ class Child(Mother):
         Mother.__init__(self)   
     def print_haircolor(self):
         print (self._haircolor)
-
+def getAllFileName(dirPath):
+    return [f for f in listdir(dirPath) if isfile(join(dirPath, f))]
+def makeDir(folderPath):
+    if not os.path.exists(folderPath):
+        os.makedirs(folderPath)
 if __name__=="__main__":
     # plot_combined_acc(trainType="Nas")
     # c = Child()
     # c.print_haircolor()
     # t = test()
     # t.foo()
+    
+    for className in dataset1Name:
+        fromDirPath = "../dataset13/test/{}".format(className)
+        toDirPath = "../dataset13_half/test/{}".format(className)
+        fileNameList = getAllFileName(fromDirPath)
+        makeDir(toDirPath)
+        
+        count = 0
+        for fileName in fileNameList:
+            # if count>499:
+            #     break
+            shutil.copyfile(os.path.join(fromDirPath, fileName), os.path.join(toDirPath, fileName))
+            
+            count = count + 1
+        print(toDirPath, "number of files", count)
+    
+    # print("number of files", len(fileNameList), fileNameList)
+    exit()
+    expList = ["1202_3.brutL1L2", "1204.brutL2L3", "1206.brutL3L4"]
+    for expName in expList:
+        for i in range(5):
+            for j in range(5):
+                # expName="1201.brutL0L1"
+                baseDir=os.path.join("./log", expName, "{}.{}_{}".format(expName, str(i), str(j)))
+                accD = AccDrawer(expName=expName, baseDir=baseDir)
+                sourceFolder = os.path.join(baseDir, "accLoss")
+                saveFolder = os.path.join(baseDir, "plot")
+                accD.plot_combined_acc(sourceFolder=sourceFolder, saveFolder=saveFolder, trainType="retrain")
     dic = {'col 1':[122, 5], 'col 2':[21], 'col 3':[12], 'col 4':[45]}
     table = [['col 1', 'col 2', 'col 3', 'col 4'], [1, 2222, 30, 500], [4, 55, 6777, 1]]
     print(tabulate(dic, headers=dic,tablefmt='fancy_grid'))
