@@ -325,7 +325,9 @@ if __name__ == '__main__':
         alMonitor = AccLossMonitor(k, folder["pltSavedDir"], folder["accLossDir"], trainType="retrain")
         alMonitor.plotAccLineChart(accRecord)
         alMonitor.plotLossLineChart(lossRecord)
+        print("accRecord", accRecord)
         alMonitor.saveAccLossNp(accRecord, lossRecord)
+        
         testC.saveDatasetAcc(kth=k)
         valList.append(last_epoch_val_acc)
         print('retrain validate accuracy:')
