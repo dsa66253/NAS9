@@ -1,6 +1,5 @@
 # config.py
-from joblib import PrintTime
-datasetRoot = "../dataset2"
+datasetRoot = "../dataset23"
 trainDataSetFolder = datasetRoot+"/train"
 testDataSetFolder = datasetRoot+"/test"
 PRIMITIVES = [
@@ -37,10 +36,6 @@ featureMap = {
         "channel":256,
         "featureMapDim":4
     },
-    "f6":{
-        "channel":256,
-        "featureMapDim":4
-    }
 }
 trainMatrix = [
     [[1, 1, 1, 1, 1]],
@@ -55,7 +50,6 @@ featureMapDim = [
     256,
     384,
     384,
-    256,
     256,
 ]
 seed = {
@@ -104,7 +98,7 @@ cfg_nasmodel = {
     'pretrain': False,
     'in_channel': 8,
     'out_channel': 64,
-    "numOfClasses": 10,
+    "numOfClasses": 20,
     "numOfLayers": len(trainMatrix),
     "numOfInnerCell": len(trainMatrix[0]),
     "numOfOperations": len(PRIMITIVES),
@@ -127,7 +121,7 @@ cfg_newnasmodel = {
     'pretrain': False,
     'in_channel': 8,
     'out_channel': 64,
-    "numOfClasses": 10,
+    "numOfClasses": 20,
     "numOfLayers": len(trainMatrix),
     "numOfInnerCell": len(trainMatrix[0]),
     "numOfOperations": len(PRIMITIVES),
@@ -144,13 +138,13 @@ folder = {
     # "tensorboard_retrain_pdarts" :"./tensorboard_retrain_pdarts",
     "alpha_pdart_nodrop": "./alpha_pdart_nodrop",
     # "weights_retrain_pdarts": "./weights_retrain_pdarts",
-    "retrainSavedModel": "./retrainSavedModel",
+    "retrainSavedModel": "retrainSavedModel",
     "pltSavedDir": "./plot",
     "accLossDir": "./accLoss",
     "log": "./log",
     "tensorboard_trainNas": "./tensorboard_trainNas",
     "tensorboard_retrain": "./tensorboard_retrain",
-    "decode": "./decode"
+    "decode": "./decode",
     
 }
 
@@ -177,4 +171,15 @@ PRIMITIVES_skip = [
     'conv_9x9',
     'conv_11x11',
     'skip_connect'
+]
+
+
+dataset2Name = [
+    "12_drink", "16_bee", "19_anthurium", "22_Millipede", "29_monkeytree", "13_horsehoe_crab", "17_chrysanthemum","20_palm_tree", "24_newfouland", "6_indian_paintbrush"
+]
+dataset1Name = [
+    "0_n01592084", "21_n01532829", "25_n01537544", "2_n01534433", "7_n01558993", "14_n01530575", "23_n01580077","26_n01531178", "4_n01560419", "8_n01582220"
+]
+dataset3Name = [
+    "10_electric_ray", "11_cock", "15_tench", "18_ostrich", "1_hen", "27_stingray", "28_white_shark","3_goldfish", "5_tiger_shark", "9_hammerhead"
 ]
