@@ -82,6 +82,7 @@ def brutNas():
                 print(json.dumps({curExpName:1}, indent=4))
                 setStdoutToDefault(f)
 
+<<<<<<< HEAD
                 makeDir(desDir)
                 makeAllDir()
                 #info handle decode job
@@ -92,12 +93,118 @@ def brutNas():
                     setStdoutToDefault(f)   
                 
                 subprocess.call('./train.sh')
+=======
+<<<<<<< HEAD
+            makeDir(desDir)
+            makeAllDir()
+            #info handle decode job
+            for kth in range(cfg["numOfKth"]):
+                filePath = "./decode/{}th_decode.json".format(kth)
+                f = setStdoutToFile(filePath)
+                print(json.dumps(manualAssign, indent=4)) #* make ndarray to list
+                setStdoutToDefault(f)   
+            
+            subprocess.call('./train.sh')
+>>>>>>> 4f7e3e0ae41a4292f6c540add2b81ef0f1d542b7
             
             # exit()
+def brutInit():
+    # this funciion also handle decode job
+    initiManualAssign = {
+        "layer_0_1": [
+            0,
+            0,
+            0,
+            0,
+            1
+        ],
+        "layer_1_2": [
+            0,
+            1,
+            0,
+            0,
+            0
+        ],
+        "layer_2_3": [
+            1,
+            0,
+            0,
+            0,
+            0
+        ],
+        "layer_3_4": [
+            1,
+            0,
+            0,
+            0,
+            0
+        ],
+        "layer_4_5": [
+            1,
+            0,
+            0,
+            0,
+            0
+        ],
+    }
+    # brutally train all possible arch of first two layers
+    expNameList = [
+    # "0227",
+    # "0227_2",
+    # "0227_3",
+    # "0227_4",
+    # "0227_5",
+    # "0227_6",
+    # "0227_7",
+    # "0227_6",
+    # "0227_7",
+    # "0227_8",
+    # "0227_9",
+    # "0227_10",
+    # "0227_11",
+    # "0227_12",
+    "0620_3"
+    ]
+    count = 0
+    for expName in expNameList:
+        manualAssign = copy.deepcopy(initiManualAssign)
+        f = setStdoutToFile("./curExperiment.json")
+        curExpName = expName
+        desDir = join("./log", curExpName)
+        print(json.dumps({curExpName:1}, indent=4))
+        setStdoutToDefault(f)
+
+        makeDir(desDir)
+        makeAllDir()
+        #info handle decode job
+        for kth in range(cfg["numOfKth"]):
+            filePath = "./decode/{}th_decode.json".format(kth)
+            f = setStdoutToFile(filePath)
+            print(json.dumps(manualAssign, indent=4)) #* make ndarray to list
+            setStdoutToDefault(f)   
+        
+        subprocess.call('./train.sh')
+        
+        # exit()
+=======
+                makeDir(desDir)
+                makeAllDir()
+                #info handle decode job
+                for kth in range(cfg["numOfKth"]):
+                    filePath = "./decode/{}th_decode.json".format(kth)
+                    f = setStdoutToFile(filePath)
+                    print(json.dumps(manualAssign, indent=4)) #* make ndarray to list
+                    setStdoutToDefault(f)   
+                
+                subprocess.call('./train.sh')
+                
+                # exit()
             
+>>>>>>> aa1cde33ea23406543be284d0f9b55e7ec89629f
 
 if __name__=="__main__":
-    brutNas()
+    # brutNas()
+    brutInit()
 
     
 

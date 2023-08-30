@@ -453,6 +453,7 @@ if __name__ == '__main__':
         
         last_epoch_val_acc = testC.test(net)
         saveAcc([last_epoch_val_acc])
+
         # print("normal model", last_epoch_val_acc)
         # net = prepareAvgModel(num_classes, kth)
         # last_epoch_val_acc = testC.test(net)
