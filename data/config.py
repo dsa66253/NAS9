@@ -1,5 +1,6 @@
 # config.py
-datasetRoot = "../dataset13_half"
+from joblib import PrintTime
+datasetRoot = "../dataset13"
 trainDataSetFolder = datasetRoot+"/train"
 testDataSetFolder = datasetRoot+"/test"
 PRIMITIVES = [
@@ -98,7 +99,7 @@ cfg_nasmodel = {
     'pretrain': False,
     'in_channel': 8,
     'out_channel': 64,
-    "numOfClasses": 10,
+    "numOfClasses": 20,
     "numOfLayers": len(trainMatrix),
     "numOfInnerCell": len(trainMatrix[0]),
     "numOfOperations": len(PRIMITIVES),
@@ -117,7 +118,7 @@ cfg_newnasmodel = {
     'epoch': 45,
     'decay1': 70,
     'decay2': 90,
-    'image_size': 128,
+    'image_size': 224,
     'pretrain': False,
     'in_channel': 8,
     'out_channel': 64,
